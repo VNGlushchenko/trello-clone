@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TestService } from '../test.service';
 
 @Component({
   selector: 'app-header',
@@ -6,10 +7,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app-header.component.css']
 })
 export class AppHeaderComponent implements OnInit {
+  constructor(private _TestService: TestService) {}
 
-  constructor() { }
-
-  ngOnInit() {
+  ngOnInit() {}
+  public checkApi() {
+    this._TestService.testApi();
   }
-
 }

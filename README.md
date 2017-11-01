@@ -25,3 +25,8 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+#Running app
+
+1) Run `node server.js` in first terminal window for path `app_folder/server`
+2) Run `npm start` in second terminal window for path `app_folder` and go to `http://localhost:4200/`
