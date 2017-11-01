@@ -9,7 +9,13 @@ var userSchema = new Schema(
     email: {
       type: String,
       required: 'Enter an e-mail',
-      unique: 'Such e-mail already exists'
+      unique: 'Such e-mail already exists',
+      validate: {
+        validator: function(param) {
+          return !!param.match(/^.+@.+\..+$/gim);
+        },
+        message: 'Enter a correct email'
+      }
     },
     salt: String
   },
