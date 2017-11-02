@@ -12,13 +12,15 @@ import { AppComponent } from './app.component';
 import { AppHeaderComponent } from './app-header/app.header.component';
 import { AppMainComponent } from './app-main/app.main.component';
 import { AppSignupComponent } from './app-signup/app.signup.component';
+import { CheckPasswordValidatorDirective } from './check-password-validator.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
     AppHeaderComponent,
     AppMainComponent,
-    AppSignupComponent
+    AppSignupComponent,
+    CheckPasswordValidatorDirective
   ],
   imports: [
     BrowserModule,

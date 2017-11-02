@@ -1,11 +1,5 @@
+import { SignupModel } from './signup.model';
 import { Component, OnInit } from '@angular/core';
-
-export class User {
-  username: String;
-  email: String;
-  password: String;
-  confirmedPassword: String;
-}
 
 @Component({
   selector: 'app-signup',
@@ -13,10 +7,11 @@ export class User {
   styleUrls: ['./app.signup.component.css']
 })
 export class AppSignupComponent implements OnInit {
-  user = new User();
+  user = new SignupModel();
   constructor() {}
 
   ngOnInit() {}
+
   onSubmit(userData) {
     // TO DO
     console.log(JSON.stringify(userData));
