@@ -1,0 +1,47 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 col-md-offset-4">
+      <h3 class="text-center">Enter your data to sign up</h3>
+    </div>
+    <div class="col-md-3 col-md-offset-4 well">
+      <form #signupForm="ngForm" (ngSubmit)="onSubmit(user)">
+        <div class="form-group">
+          <label for="username">Name</label>
+          <input type="text" class="form-control" id="username" name="username" placeholder="User name" required [(ngModel)]="user.username"
+            #usernameModel="ngModel">
+        </div>
+        <div *ngIf="usernameModel.touched || signupForm.submitted">
+          <div *ngIf="usernameModel.hasError('required')" class="alert alert-danger">Name is required</div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="username@example.com" required email [(ngModel)]="user.email"
+            #emailModel="ngModel">
+        </div>
+        <div *ngIf="emailModel.touched || signupForm.submitted">
+          <div *ngIf="emailModel.hasError('required')" class="alert alert-danger">Email is required</div>
+          <div *ngIf="emailModel.hasError('email')" class="alert alert-danger">Email is invalid</div>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" class="form-control" id="password" name="password" placeholder="Password" required [(ngModel)]="user.password"
+            #passwordModel="ngModel" minlength="8">
+        </div>
+        <div *ngIf="passwordModel.touched || signupForm.submitted">
+          <div *ngIf="passwordModel.hasError('required')" class="alert alert-danger">Password is required</div>
+          <div *ngIf="passwordModel.hasError('minlength')" class="alert alert-danger">Password must contain 8 symbols at least</div>
+        </div>
+        <div class="form-group">
+          <label for="confirm">Confirm password</label>
+          <input type="password" class="form-control" id="confirm" name="confirm" placeholder="Confirm password" required [(ngModel)]="user.confirmedPassword"
+            #confirmedPasswordModel="ngModel" minlength="8">
+        </div>
+        <div *ngIf="confirmedPasswordModel.touched || signupForm.submitted">
+          <div *ngIf="confirmedPasswordModel.hasError('required')" class="alert alert-danger">Password is required</div>
+          <div *ngIf="confirmedPasswordModel.hasError('minlength')" class="alert alert-danger">Password must contain 8 symbols at least</div>
+        </div>
+        <button type="submit" class="btn btn-default" [disabled]="!signupForm.form.valid">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>

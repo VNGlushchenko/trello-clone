@@ -17,8 +17,8 @@ export class TestService {
       .post(
         '/api/test',
         {
-          userName: 'John',
-          email: 'john8@example.com',
+          userName: 'John12',
+          email: 'john12@example.com',
           password: 'testpassword',
           confirmedPassword: 'testpassword'
         },

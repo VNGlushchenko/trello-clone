@@ -9,9 +9,15 @@ var jwt = require('jsonwebtoken');
 var config = require('./config');
 var User = require('./models/user');
 var port = process.env.PORT || 3000;
-mongoose.connect(config.database, { useMongoClient: true });
+mongoose.connect(config.database, {
+  useMongoClient: true
+});
 app.set('jwtSecret', config.secret);
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(
+  bodyParser.urlencoded({
+    extended: false
+  })
+);
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 //app.use(express.static(path.join(__dirname, 'client')));
@@ -56,32 +62,36 @@ app.post('/api/test', function(req, res) {
   }
   var existingEmail = '';
 
-  User.find({ email: req.body.email }, { email: 1 }).exec(function(err, email) {
+  User.find(
+    {
+      email: req.body.email
+    },
+    {
+      email: 1
+    }
+  ).exec(function(err, email) {
     if (err) throw err;
 
     if (email.length) {
       existingEmail = email[0].email;
       console.log(email);
       res.status(400).send('User with such e-mail already exists');
+    } else {
+      var newUser = new User({
+        name: req.body.userName,
+        email: req.body.email,
+        password: req.body.password
+      });
+
+      newUser.save(function(err) {
+        if (err) throw err;
+
+        console.log('User has been successfully saved');
+        res.status(200).send({ message: 'You have successfully registered' });
+      });
     }
   });
-
-  if (!existingEmail) {
-    var newUser = new User({
-      name: req.body.userName,
-      email: req.body.email,
-      password: req.body.password
-    });
-
-    newUser.save(function(err) {
-      if (err) throw err;
-
-      console.log('User saved successfully');
-      res.send(newUser);
-    });
-  }
 });
-
 //------------------------
 app.listen(port);
 
