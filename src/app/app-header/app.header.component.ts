@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { TestService } from '../test.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -8,12 +7,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.header.component.css']
 })
 export class AppHeaderComponent implements OnInit {
-  constructor(private _TestService: TestService, private router: Router) {}
+  constructor(private router: Router) {}
 
   ngOnInit() {}
-  public checkApi() {
-    this._TestService.testApi();
-  }
 
   goToSignup() {
     this.router.navigate(['/signup']);

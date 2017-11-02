@@ -1,5 +1,5 @@
 export class SignupModel {
-  username: String;
+  userName: String;
   email: String;
   password: String;
   confirmedPassword: String;

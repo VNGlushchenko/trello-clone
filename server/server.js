@@ -34,15 +34,15 @@ app.get('/mongo', function(req, res) {
     res.json(users);
   });
 });
-app.post('/api/test', function(req, res) {
+app.post('/api/signup', function(req, res) {
   var signUpErrorMasseges = {};
 
-  if (!req.body.userName) {
+  if (!req.body.userName.trim()) {
     signUpErrorMasseges.userName = 'user name is empty';
   }
 
-  if (!req.body.email) {
-    signUpErrorMasseges.email = 'email is empty';
+  if (!!!req.body.email.match(/^.+@.+\..+$/gim)) {
+    signUpErrorMasseges.email = 'email is incorrect';
   }
 
   if (!req.body.password) {
@@ -75,7 +75,9 @@ app.post('/api/test', function(req, res) {
     if (email.length) {
       existingEmail = email[0].email;
       console.log(email);
-      res.status(400).send('User with such e-mail already exists');
+      res.status(400).send({
+        message: 'User with such email already exists.'
+      });
     } else {
       var newUser = new User({
         name: req.body.userName,
@@ -87,12 +89,13 @@ app.post('/api/test', function(req, res) {
         if (err) throw err;
 
         console.log('User has been successfully saved');
-        res.status(200).send({ message: 'You have successfully registered' });
+        res.status(200).send({
+          message: 'You have successfully registered.'
+        });
       });
     }
   });
 });
 //------------------------
 app.listen(port);
-
 console.log('Server is run at http://localhost:' + port);
