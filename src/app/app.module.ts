@@ -3,10 +3,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ROUTES } from './routes';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { DndModule } from 'ng2-dnd';
 import { ToastModule } from 'ng2-toastr/ng2-toastr';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AuthService } from './auth.service';
 
@@ -16,6 +17,7 @@ import { AppMainComponent } from './app-main/app.main.component';
 import { AppSignupComponent } from './app-signup/app.signup.component';
 import { CheckPasswordValidatorDirective } from './check-password-validator.directive';
 import { AppSigninComponent } from './app-signin/app-signin.component';
+import { AuthInterceptor } from './auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -31,11 +33,18 @@ import { AppSigninComponent } from './app-signin/app-signin.component';
     BrowserAnimationsModule,
     DndModule.forRoot(),
     ToastModule.forRoot(),
-    HttpModule,
+    HttpClientModule,
     FormsModule,
     RouterModule.forRoot(ROUTES)
   ],
-  providers: [AuthService],
+  providers: [
+    AuthService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

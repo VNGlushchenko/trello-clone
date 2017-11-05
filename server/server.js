@@ -64,7 +64,7 @@ const jwtOptions = {
 
 passport.use(
   new JwtStrategy(jwtOptions, function(payload, done) {
-    User.findById(payload.id, (err, user) => {
+    User.findById(payload.client, (err, user) => {
       if (err) {
         return done(err);
       }
@@ -82,13 +82,14 @@ apiRoutes.get('/', function(req, res) {
   res.send('Server is succesfully run');
 });
 
-apiRoutes.get('/mongo', function(req, res) {
+apiRoutes.get('/mongo', passport.authenticate('jwt'), function(req, res) {
   User.find({}).exec(function(err, users) {
     if (err) throw err;
 
     res.json(users);
   });
 });
+
 apiRoutes.post('/signup', function(req, res) {
   var signUpErrorMasseges = {};
 
@@ -169,4 +170,4 @@ apiRoutes.post('/signin', passport.authenticate('local'), function(req, res) {
 app.use('/api', apiRoutes);
 //----------------------------
 app.listen(port);
-console.log('Server is run at http://localhost:' + port);
+console.log(`Server is run at http://localhost:${port}/api`);

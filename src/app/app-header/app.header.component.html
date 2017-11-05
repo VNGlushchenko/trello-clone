@@ -10,6 +10,7 @@
         (click)="goToSignIn()">Sign in</button>
       <button *ngIf="_authService.userCredentials.user && _authService.userCredentials.token" type="button" class="btn btn-info navbar-btn"
         (click)="logOut()">Log out</button>
+      <button type="button" class="btn btn-default navbar-btn" (click)="testMongo()">Test Mongo</button>
     </div>
   </div>
 </nav>

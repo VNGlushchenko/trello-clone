@@ -37,14 +37,13 @@ export class AppSignupComponent implements OnInit {
       .toPromise()
       .then(
         res => {
-          this.showSuccess(res.json().message);
-          console.log(res.json());
+          this.showSuccess(res['message']);
           return setTimeout(() => {
             this._router.navigate(['/signin']);
           }, 3000);
         },
         err => {
-          this.showError(err.json().message);
+          this.showError(err['error']['message']);
         }
       );
   }

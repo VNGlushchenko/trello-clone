@@ -23,10 +23,9 @@ export class AppSigninComponent implements OnInit {
       .toPromise()
       .then(
         res => {
-          const response = res.json();
           this.serverValidationErrMsg = '';
-          this._authService.userCredentials.user = response.user;
-          this._authService.userCredentials.token = response.token;
+          this._authService.userCredentials.user = res['user'];
+          this._authService.userCredentials.token = res['token'];
           console.log(
             `user = ${this._authService.userCredentials.user}, token = ${this
               ._authService.userCredentials.token}`
@@ -38,7 +37,7 @@ export class AppSigninComponent implements OnInit {
             this.serverValidationErrMsg =
               'Invalid login credentials. Please try again.';
           }
-          console.log(err);
+          console.log(err['message']);
         }
       );
   }

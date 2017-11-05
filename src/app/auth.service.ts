@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UserCredentials } from './user.credentials';
 
 @Injectable()
 export class AuthService {
   userCredentials = new UserCredentials();
 
-  constructor(private _http: Http) {}
+  constructor(private _http: HttpClient) {}
 
   public signUp(userData) {
-    const headers = new Headers();
+    const headers = new HttpHeaders();
     headers.append('Content-Type', 'application/json');
 
     return this._http.post(
@@ -25,7 +25,7 @@ export class AuthService {
   }
 
   public signIn(userData) {
-    const headers = new Headers();
+    const headers = new HttpHeaders();
     headers.append('Content-Type', 'application/json');
 
     return this._http.post(
@@ -43,8 +43,9 @@ export class AuthService {
   public logOut() {
     this.userCredentials.user = '';
     this.userCredentials.token = '';
-    /* console.log(
-      `user: ${this.userCredentials.user}, token: ${this.userCredentials.token}`
-    ); */
+  }
+
+  public testMongo() {
+    return this._http.get('/api/mongo');
   }
 }

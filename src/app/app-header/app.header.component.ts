@@ -24,4 +24,11 @@ export class AppHeaderComponent implements OnInit {
     this._authService.logOut();
     this._router.navigate(['/']);
   }
+
+  testMongo() {
+    this._authService
+      .testMongo()
+      .toPromise()
+      .then(res => console.log(res), err => console.log(err));
+  }
 }
