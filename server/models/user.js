@@ -5,7 +5,7 @@ var crypto = require('crypto');
 var userSchema = new Schema(
   {
     name: { type: String, required: true },
-    passwordHash: { type: String, required: true, select: false },
+    passwordHash: { type: String, required: true /* , select: false  */ },
     email: {
       type: String,
       required: 'Enter an e-mail',
@@ -49,6 +49,7 @@ userSchema
 userSchema.methods.checkPassword = function(password) {
   if (!password) return false;
   if (!this.passwordHash) return false;
+
   return (
     crypto.pbkdf2Sync(password, this.salt, 1, 128, 'sha1') == this.passwordHash
   );

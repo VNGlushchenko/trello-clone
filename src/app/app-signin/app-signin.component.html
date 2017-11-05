@@ -1,0 +1,32 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 col-md-offset-4">
+      <h3 class="text-center">Enter your data to sign in</h3>
+    </div>
+    <div class="col-md-3 col-md-offset-4 well">
+      <form #signInForm="ngForm" (ngSubmit)="onSubmit(user)">
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="username@example.com" required email [(ngModel)]="user.email"
+            #emailModel="ngModel" (ngModelChange)="serverValidationErrMsg=''">
+        </div>
+        <div *ngIf="emailModel.touched || signInForm.submitted">
+          <div *ngIf="emailModel.hasError('required')" class="alert alert-danger">Email is required</div>
+          <div *ngIf="emailModel.hasError('email')" class="alert alert-danger">Email is invalid</div>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" class="form-control" id="password" name="password" placeholder="Password" required [(ngModel)]="user.password"
+            #passwordModel="ngModel" (ngModelChange)="serverValidationErrMsg=''">
+        </div>
+        <div *ngIf="passwordModel.touched || signInForm.submitted">
+          <div *ngIf="passwordModel.hasError('required')" class="alert alert-danger">Password is required</div>
+        </div>
+        <div *ngIf="serverValidationErrMsg">
+          <div class="alert alert-danger">{{serverValidationErrMsg}}</div>
+        </div>
+        <button type="submit" class="btn btn-default" [disabled]="!signInForm.form.valid">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>

@@ -8,13 +8,14 @@ import { FormsModule } from '@angular/forms';
 import { DndModule } from 'ng2-dnd';
 import { ToastModule } from 'ng2-toastr/ng2-toastr';
 
-import { AuthService } from './app-signup/signup.service';
+import { AuthService } from './auth.service';
 
 import { AppComponent } from './app.component';
 import { AppHeaderComponent } from './app-header/app.header.component';
 import { AppMainComponent } from './app-main/app.main.component';
 import { AppSignupComponent } from './app-signup/app.signup.component';
 import { CheckPasswordValidatorDirective } from './check-password-validator.directive';
+import { AppSigninComponent } from './app-signin/app-signin.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { CheckPasswordValidatorDirective } from './check-password-validator.dire
     AppHeaderComponent,
     AppMainComponent,
     AppSignupComponent,
-    CheckPasswordValidatorDirective
+    CheckPasswordValidatorDirective,
+    AppSigninComponent
   ],
   imports: [
     BrowserModule,

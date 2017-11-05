@@ -1,6 +1,10 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var JwtStrategy = require('passport-jwt').Strategy;
+var ExtractJwt = require('passport-jwt').ExtractJwt;
 var morgan = require('morgan');
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -12,7 +16,7 @@ var port = process.env.PORT || 3000;
 mongoose.connect(config.database, {
   useMongoClient: true
 });
-app.set('jwtSecret', config.secret);
+const jwtSecret = config.secret;
 app.use(
   bodyParser.urlencoded({
     extended: false
@@ -20,21 +24,72 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(morgan('dev'));
-//app.use(express.static(path.join(__dirname, 'client')));
+app.use(passport.initialize());
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: 'email',
+      passwordField: 'password',
+      session: false
+    },
+    function(username, password, done) {
+      User.findOne({ email: username }, function(err, user) {
+        if (err) {
+          return done(err);
+        }
+
+        if (!user || !user.checkPassword(password)) {
+          return done(null, false);
+        }
+
+        return done(null, user);
+      });
+    }
+  )
+);
+//------------------------
+const jwtOptions = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: jwtSecret
+};
+
+passport.use(
+  new JwtStrategy(jwtOptions, function(payload, done) {
+    User.findById(payload.id, (err, user) => {
+      if (err) {
+        return done(err);
+      }
+      if (user) {
+        done(null, user);
+      } else {
+        done(null, false);
+      }
+    });
+  })
+);
 //routes
-app.get('/', function(req, res) {
+var apiRoutes = express.Router();
+apiRoutes.get('/', function(req, res) {
   res.send('Server is succesfully run');
 });
 
-app.get('/mongo', function(req, res) {
+apiRoutes.get('/mongo', function(req, res) {
   User.find({}).exec(function(err, users) {
     if (err) throw err;
 
-    console.log(users);
     res.json(users);
   });
 });
-app.post('/api/signup', function(req, res) {
+apiRoutes.post('/signup', function(req, res) {
   var signUpErrorMasseges = {};
 
   if (!req.body.userName.trim()) {
@@ -74,7 +129,7 @@ app.post('/api/signup', function(req, res) {
 
     if (email.length) {
       existingEmail = email[0].email;
-      console.log(email);
+
       res.status(400).send({
         message: 'User with such email already exists.'
       });
@@ -97,5 +152,21 @@ app.post('/api/signup', function(req, res) {
   });
 });
 //------------------------
+apiRoutes.post('/signin', passport.authenticate('local'), function(req, res) {
+  const payload = {
+    client: req.user.id,
+    uid: req.user.email,
+    exp: new Date().setDate(new Date().getDate() + 1)
+  };
+  const token = jwt.sign(payload, jwtSecret);
+
+  res.json({
+    user: req.user.email,
+    token: token
+  });
+});
+//----------------------------
+app.use('/api', apiRoutes);
+//----------------------------
 app.listen(port);
 console.log('Server is run at http://localhost:' + port);

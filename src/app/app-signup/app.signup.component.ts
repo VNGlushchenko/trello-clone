@@ -1,8 +1,9 @@
 import { SignupModel } from './signup.model';
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
-import { AuthService } from './signup.service';
+
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -37,9 +38,10 @@ export class AppSignupComponent implements OnInit {
       .then(
         res => {
           this.showSuccess(res.json().message);
+          console.log(res.json());
           return setTimeout(() => {
-            this._router.navigate(['/']);
-          }, 4000);
+            this._router.navigate(['/signin']);
+          }, 3000);
         },
         err => {
           this.showError(err.json().message);
