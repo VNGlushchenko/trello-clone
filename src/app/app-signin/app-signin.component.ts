@@ -26,10 +26,10 @@ export class AppSigninComponent implements OnInit {
           this.serverValidationErrMsg = '';
           this._authService.userCredentials.user = res['user'];
           this._authService.userCredentials.token = res['token'];
-          console.log(
+          /* console.log(
             `user = ${this._authService.userCredentials.user}, token = ${this
               ._authService.userCredentials.token}`
-          );
+          ); */
           this._router.navigate(['/']);
         },
         err => {

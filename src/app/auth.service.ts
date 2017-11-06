@@ -46,6 +46,6 @@ export class AuthService {
   }
 
   public testMongo() {
-    return this._http.get('/api/mongo');
+    return this._http.get('/api/task');
   }
 }
