@@ -15,9 +15,12 @@ import { AppComponent } from './app.component';
 import { AppHeaderComponent } from './app-header/app.header.component';
 import { AppMainComponent } from './app-main/app.main.component';
 import { AppSignupComponent } from './app-signup/app.signup.component';
-import { CheckPasswordValidatorDirective } from './check-password-validator.directive';
-import { AppSigninComponent } from './app-signin/app-signin.component';
+import { CheckPasswordValidatorDirective } from './app-signup/check-password-validator.directive';
+import { AppSigninComponent } from './app-signin/app.signin.component';
 import { AuthInterceptor } from './auth.interceptor';
+import { AppTaskComponent } from './app-task/app-task.component';
+import { AppGroupComponent } from './app-group/app-group.component';
+import { AppBoardComponent } from './app-board/app-board.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +29,10 @@ import { AuthInterceptor } from './auth.interceptor';
     AppMainComponent,
     AppSignupComponent,
     CheckPasswordValidatorDirective,
-    AppSigninComponent
+    AppSigninComponent,
+    AppTaskComponent,
+    AppGroupComponent,
+    AppBoardComponent
   ],
   imports: [
     BrowserModule,

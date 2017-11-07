@@ -1,0 +1,8 @@
+<div class="col-sm-3" [attr.group-id]="group._id" [attr.group-order]="group.order">
+  <div class="panel panel-default">
+    <div class="panel-heading">{{group.title}}</div>
+    <div class="panel-body" dnd-sortable-container [sortableData]="group.tasks">
+      <app-task *ngFor="let task of group.tasks; let i = index" dnd-sortable [sortableIndex]="i" [task]="task">{{task.title}}</app-task>
+    </div>
+  </div>
+</div>

@@ -5,8 +5,8 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signin',
-  templateUrl: './app-signin.component.html',
-  styleUrls: ['./app-signin.component.css']
+  templateUrl: './app.signin.component.html',
+  styleUrls: ['./app.signin.component.css']
 })
 export class AppSigninComponent implements OnInit {
   user = new SigninModel();
