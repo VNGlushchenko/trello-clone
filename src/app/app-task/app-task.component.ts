@@ -9,7 +9,7 @@ import { Task } from './task';
 export class AppTaskComponent implements OnInit {
   @Input() task: Task;
 
-  changedTask: Task;
+  changedTask = new Task();
 
   constructor() {}
 

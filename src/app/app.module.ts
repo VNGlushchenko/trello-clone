@@ -10,6 +10,7 @@ import { ToastModule } from 'ng2-toastr/ng2-toastr';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AuthService } from './auth.service';
+import { BoardService } from './app-board/board.service';
 
 import { AppComponent } from './app.component';
 import { AppHeaderComponent } from './app-header/app.header.component';
@@ -45,6 +46,7 @@ import { AppBoardComponent } from './app-board/app-board.component';
   ],
   providers: [
     AuthService,
+    BoardService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

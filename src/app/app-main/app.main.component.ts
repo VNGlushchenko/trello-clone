@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Group } from '../group';
-import { GROUPS } from '../mock-groups';
 
 @Component({
   selector: 'app-main',
@@ -8,10 +6,7 @@ import { GROUPS } from '../mock-groups';
   styleUrls: ['./app.main.component.css']
 })
 export class AppMainComponent implements OnInit {
-  groups: Group[];
   constructor() {}
 
-  ngOnInit() {
-    this.groups = GROUPS;
-  }
+  ngOnInit() {}
 }

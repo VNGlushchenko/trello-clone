@@ -31,6 +31,7 @@
     "mongodb": "^2.2.33",
     "mongoose": "^4.12.5",
     "morgan": "^1.9.0",
+    "ng2-bs3-modal": "^0.13.0",
     "ng2-dnd": "^4.2.0",
     "ng2-toastr": "^4.1.2",
     "passport": "^0.4.0",

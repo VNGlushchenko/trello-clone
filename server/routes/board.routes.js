@@ -6,9 +6,9 @@ var Task = require('../models/task');
 module.exports = function(app) {
   // Read
   app.get('/board', function(req, res) {
-    Board.findOne(function(err, boards) {
+    Board.findOne(function(err, board) {
       if (err) res.json({ error: err });
-      res.json(boards);
+      res.json({ _id: board._id, title: board.title });
     });
   });
 
@@ -16,7 +16,7 @@ module.exports = function(app) {
     Board.findById(req.params.id, function(err, board) {
       if (err) res.json({ error: err });
       if (board) {
-        res.json(board);
+        res.json({ _id: board._id, title: board.title });
       } else {
         res.json({ message: 'Board is not found' });
       }
@@ -27,8 +27,11 @@ module.exports = function(app) {
     Board.findById(req.params.id, function(err, board) {
       if (err) res.json({ error: err });
       if (board) {
-        Group.find({ boardId: req.params.id })
-          .sort({ order: 1 })
+        Group.find(
+          { boardId: req.params.id },
+          { _id: 1, title: 1, boardId: 1, order: 1 }
+        )
+          .sort({ boardId: 1, order: 1 })
           .exec({ boardId: req.params.id }, function(err, groups) {
             if (err) res.json({ error: err });
             if (groups) {
@@ -45,8 +48,19 @@ module.exports = function(app) {
     Board.findById(req.params.id, function(err, board) {
       if (err) res.json({ error: err });
       if (board) {
-        Task.find({ boardId: req.params.id })
-          .sort({ order: 1 })
+        Task.find(
+          { boardId: req.params.id },
+          {
+            _id: 1,
+            title: 1,
+            description: 1,
+            dueDate: 1,
+            boardId: 1,
+            groupId: 1,
+            order: 1
+          }
+        )
+          .sort({ boardId: 1, groupId: 1, order: 1 })
           .exec({ boardId: req.params.id }, function(err, tasks) {
             if (err) throw err;
             if (tasks) res.json(tasks);
