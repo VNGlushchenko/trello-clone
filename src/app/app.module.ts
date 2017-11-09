@@ -1,3 +1,4 @@
+import { DragulaModule } from 'ng2-dragula/components/dragular.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
@@ -42,7 +43,8 @@ import { AppBoardComponent } from './app-board/app-board.component';
     ToastModule.forRoot(),
     HttpClientModule,
     FormsModule,
-    RouterModule.forRoot(ROUTES)
+    RouterModule.forRoot(ROUTES),
+    DragulaModule
   ],
   providers: [
     AuthService,

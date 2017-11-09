@@ -1,13 +1,8 @@
 <div class="col-sm-3" [attr.group-id]="group._id" [attr.group-order]="group.order">
   <div class="panel panel-default">
     <div class="panel-heading">{{group.title}}</div>
-    <div class="panel-body" dnd-sortable-container [sortableData]="group.tasks">
-      <ul class="list-group">
-        <li (onDropSuccess)="log($event)" class="well list-group-item" *ngFor="let task of group.tasks; let i=index" dnd-sortable
-          [sortableIndex]="i" [attr.task-id]="task._id" [attr.task-order]="task.order">
-          <strong>{{task.title}}</strong> | {{task.dueDate}}
-        </li>
-      </ul>
+    <div class="panel-body" [dragula]="'nested-bag'">
+      <app-task *ngFor="let task of group.tasks" [task]="task"></app-task>
     </div>
   </div>
 </div>

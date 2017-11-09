@@ -11,10 +11,6 @@ export class AppGroupComponent implements OnInit {
 
   changedGroup = new Group();
 
-  log(e) {
-    console.log(e);
-  }
-
   constructor() {}
 
   ngOnInit() {

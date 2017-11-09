@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <div class="row">
-    <app-group *ngFor="let group of board.groups" [group]="group"></app-group>
+    <app-group *ngFor="let group of board.groups" [group]="group" [dragula]="'nested-bag'"></app-group>
     <div class="col-sm-3">
       <div class="panel panel-default">
         <div class="panel-body">
