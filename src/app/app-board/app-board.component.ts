@@ -29,22 +29,67 @@ export class AppBoardComponent implements OnInit {
 
   private onDrag(args) {
     const [elDrag, sourceDrag] = args;
-    console.log('----elDrag----');
-    console.dir(elDrag);
     console.log('----sourceDrag----');
     console.dir(sourceDrag);
   }
 
   private onDrop(args) {
     const [elDrop, targetDrop, sourceDrop, siblingDrop] = args;
-    console.log('----elDrop----');
-    console.dir(elDrop);
     console.log('----targetDrop----');
     console.dir(targetDrop);
+    if (targetDrop.localName === 'app-task') {
+      console.log('was: ' + JSON.stringify(targetDrop.dataset));
+
+      console.log(
+        'been: ' +
+          JSON.stringify(
+            targetDrop.parentElement.parentElement.parentElement.parentElement
+              .dataset
+          )
+      );
+
+      if (
+        targetDrop.dataset.taskGroupId ===
+        targetDrop.parentElement.parentElement.parentElement.parentElement
+          .dataset.groupId
+      ) {
+        console.log(`check the same groupId tasks' order`);
+      } else {
+        console.log(`check both groupIds tasks' order`); // !!!!for correctness add two variables 'was groupId' and 'been groupId'
+      }
+    } else {
+      console.log('was: ' + JSON.stringify(targetDrop.parentElement.dataset)); // !!!!chech orderID after drop
+    }
+
     console.log('----sourceDrop----');
-    console.dir(sourceDrop);
+    console.dir(sourceDrop); // where drop
+    /* sourceDrop.localName === 'app-group', parentElement.children[0].attributes[2].value, parentElement.children[0].attributes[3].value*/
     console.log('----siblingDrop----');
-    console.dir(siblingDrop);
+    console.dir(siblingDrop); // from drag
+    /* if (siblingDrop.localName === 'app-group') {
+      console.log(
+        'group-id: ' +
+          siblingDrop.parentElement.children[0].children[0].attributes[2].value
+      );
+      console.log(
+        'order-id: ' +
+          siblingDrop.parentElement.children[0].children[0].attributes[3].value
+      );
+      console.log(
+        siblingDrop.parentElement.children[1].children[0].attributes[2].value
+      );
+      console.log(
+        siblingDrop.parentElement.children[1].children[0].attributes[3].value
+      );
+      console.log(
+        siblingDrop.parentElement.children[2].children[0].attributes[2].value
+      );
+      console.log(
+        siblingDrop.parentElement.children[2].children[0].attributes[3].value
+      );
+    } else {
+      console.dir(siblingDrop);
+    } */
   }
 
   constructor(

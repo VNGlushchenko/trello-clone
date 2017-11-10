@@ -1,8 +1,9 @@
-<div class="col-sm-3" [attr.group-id]="group._id" [attr.group-order]="group.order">
+<div class="col-sm-3">
   <div class="panel panel-default">
     <div class="panel-heading">{{group.title}}</div>
     <div class="panel-body" [dragula]="'nested-bag'">
-      <app-task *ngFor="let task of group.tasks" [task]="task"></app-task>
+      <app-task *ngFor="let task of group.tasks" [attr.data-task-id]="task._id" [attr.data-task-order]="task.order" [attr.data-task-group-id]="task.groupId"
+        [attr.data-task-board-id]="task.boardId" [task]="task"></app-task>
     </div>
   </div>
 </div>
