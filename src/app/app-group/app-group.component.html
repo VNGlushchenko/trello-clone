@@ -1,9 +1,20 @@
 <div class="col-sm-3">
   <div class="panel panel-default">
     <div class="panel-heading">{{group.title}}</div>
-    <div class="panel-body" [dragula]="'nested-bag'">
-      <app-task *ngFor="let task of group.tasks" [attr.data-task-id]="task._id" [attr.data-task-order]="task.order" [attr.data-task-group-id]="task.groupId"
-        [attr.data-task-board-id]="task.boardId" [task]="task"></app-task>
+    <div class="panel-body">
+      <div [dragula]="'bag-one'" [dragulaModel]='group.tasks'>
+        <app-task *ngFor="let task of group.tasks;let i = index;" [attr.data-task-id]="task._id" [attr.data-task-order]="task.order"
+          [attr.data-task-group-id]="task.groupId" [attr.data-task-board-id]="task.boardId" [task]="task">
+        </app-task>
+      </div>
+      <div class="well">
+        <form>
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Add a task...">
+          </div>
+          <button type="button" class="btn btn-default">Save</button>
+        </form>
+      </div>
     </div>
   </div>
 </div>

@@ -1,13 +1,13 @@
 <div class="container-fluid">
   <div class="row">
     <app-group *ngFor="let group of board.groups" [attr.data-group-board-id]="group.boardId" [attr.data-group-id]="group._id"
-      [attr.data-group-order]="group.order" [group]="group" [dragula]="'nested-bag'"></app-group>
+      [attr.data-group-order]="group.order" [group]="group"></app-group>
     <div class="col-sm-3">
       <div class="panel panel-default">
         <div class="panel-body">
           <form>
             <div class="form-group">
-              <input type="text" class="form-control" placeholder="Add a list...">
+              <input type="text" class="form-control" placeholder="Add a group...">
             </div>
             <button type="button" class="btn btn-default">Save</button>
           </form>
