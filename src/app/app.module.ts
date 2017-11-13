@@ -12,6 +12,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AuthService } from './auth.service';
 import { BoardService } from './app-board/board.service';
+import { TaskService } from './app-task/task.service';
 
 import { AppComponent } from './app.component';
 import { AppHeaderComponent } from './app-header/app.header.component';
@@ -49,6 +50,7 @@ import { AppBoardComponent } from './app-board/app-board.component';
   providers: [
     AuthService,
     BoardService,
+    TaskService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

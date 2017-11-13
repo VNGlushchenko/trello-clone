@@ -1,9 +1,10 @@
 import { DragulaService } from 'ng2-dragula/components/dragula.provider';
-import { Component, OnInit, DoCheck } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { BoardService } from './board.service';
 import { Task } from '../app-task/task';
 import { Board } from './board';
 import { Group } from '../app-group/group';
+import { TaskService } from '../app-task/task.service';
 
 @Component({
   selector: 'app-board',
@@ -17,7 +18,8 @@ export class AppBoardComponent implements OnInit {
 
   constructor(
     private _boardService: BoardService,
-    private _dragulaService: DragulaService
+    private _dragulaService: DragulaService,
+    private _taskService: TaskService
   ) {
     _dragulaService.dropModel.subscribe(value => {
       this._onDropModel(value);
@@ -87,6 +89,10 @@ export class AppBoardComponent implements OnInit {
 
     console.log('_tasksToUpdate: ');
     console.log(JSON.stringify(this._tasksToUpdate));
+
+    this._taskService
+      .updateTasksList(this._tasksToUpdate)
+      .subscribe(res => console.log(res));
 
     this._tasksToUpdate.length = 0;
   }
