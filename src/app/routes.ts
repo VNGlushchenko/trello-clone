@@ -7,5 +7,5 @@ export const ROUTES: Routes = [
   { path: '', component: AppMainComponent },
   { path: 'signup', component: AppSignupComponent },
   { path: 'signin', component: AppSigninComponent }
-  // {path: '**', component: NotFoundComponent},
+  // {path: '**', component: NotFoundComponent}
 ];

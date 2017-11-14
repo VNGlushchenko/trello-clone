@@ -1,17 +1,20 @@
 import { DragulaService } from 'ng2-dragula/components/dragula.provider';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
 import { BoardService } from './board.service';
 import { Task } from '../app-task/task';
 import { Board } from './board';
 import { Group } from '../app-group/group';
 import { TaskService } from '../app-task/task.service';
+import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
+import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 @Component({
   selector: 'app-board',
   templateUrl: './app-board.component.html',
   styleUrls: ['./app-board.component.css']
 })
-export class AppBoardComponent implements OnInit {
+export class AppBoardComponent implements OnInit, OnDestroy {
   public board = new Board();
   private _tasks: Task[];
   private _tasksToUpdate = new Array<Task>();
@@ -19,11 +22,17 @@ export class AppBoardComponent implements OnInit {
   constructor(
     private _boardService: BoardService,
     private _dragulaService: DragulaService,
-    private _taskService: TaskService
+    private _taskService: TaskService,
+    private _authService: AuthService,
+    private _router: Router,
+    public toastr: ToastsManager,
+    vcr: ViewContainerRef
   ) {
     _dragulaService.dropModel.subscribe(value => {
       this._onDropModel(value);
     });
+
+    this.toastr.setRootViewContainerRef(vcr);
   }
 
   ngOnInit() {
@@ -40,6 +49,14 @@ export class AppBoardComponent implements OnInit {
           this._distributeTasksOnGroups(this._tasks, this.board.groups);
         });
     });
+  }
+
+  ngOnDestroy() {
+    // this._dragulaService.dropModel.unsubscribe();
+  }
+
+  private _showError(msg) {
+    this.toastr.error(msg, 'Oops!', { toastLife: 3000 });
   }
 
   private _distributeTasksOnGroups(source, destination): void {
@@ -92,9 +109,20 @@ export class AppBoardComponent implements OnInit {
 
     this._taskService
       .updateTasksList(this._tasksToUpdate)
-      .subscribe(res => console.log(res));
-
-    this._tasksToUpdate.length = 0;
+      .toPromise()
+      .then(
+        res => {
+          console.log(res);
+          this._tasksToUpdate.length = 0;
+        },
+        err => {
+          console.log(err);
+          this._showError('For authorized users only');
+          return setTimeout(() => {
+            this._router.navigate(['/signin']);
+          }, 3000);
+        }
+      );
   }
 
   private _getTasksToCheck(
@@ -114,7 +142,9 @@ export class AppBoardComponent implements OnInit {
   private _findTasksByGroupId(groupId: string, tasksList: Task[]): void {
     for (let i = 0; i < this.board.groups.length; i++) {
       if (this.board.groups[i]._id === groupId) {
-        this.board.groups[i].tasks.forEach(item => tasksList.push(item));
+        this.board.groups[i].tasks.forEach(item => {
+          tasksList.push(item);
+        });
         break;
       }
     }
@@ -145,6 +175,15 @@ export class AppBoardComponent implements OnInit {
           order: tasksList[i].order
         });
       }
+    }
+  }
+
+  private _checkUserCredentials() {
+    if (this._authService.checkUserCredentials()) {
+      this._showError('For authorized users only');
+      return setTimeout(() => {
+        this._router.navigate(['/signin']);
+      }, 3000);
     }
   }
 }

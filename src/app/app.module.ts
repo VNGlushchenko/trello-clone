@@ -7,7 +7,7 @@ import { ROUTES } from './routes';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { DndModule } from 'ng2-dnd';
-import { ToastModule } from 'ng2-toastr/ng2-toastr';
+import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AuthService } from './auth.service';
@@ -24,6 +24,7 @@ import { AuthInterceptor } from './auth.interceptor';
 import { AppTaskComponent } from './app-task/app-task.component';
 import { AppGroupComponent } from './app-group/app-group.component';
 import { AppBoardComponent } from './app-board/app-board.component';
+import { CustomToastOptions } from './toast.options';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { AppBoardComponent } from './app-board/app-board.component';
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    }
+    },
+    { provide: ToastOptions, useClass: CustomToastOptions }
   ],
   bootstrap: [AppComponent]
 })

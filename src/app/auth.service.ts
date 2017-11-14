@@ -48,4 +48,8 @@ export class AuthService {
   public testMongo() {
     return this._http.get('/api/task');
   }
+
+  public checkUserCredentials() {
+    return !this.userCredentials.user && !this.userCredentials.token;
+  }
 }
