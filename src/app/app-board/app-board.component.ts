@@ -1,5 +1,11 @@
 import { DragulaService } from 'ng2-dragula/components/dragula.provider';
-import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewContainerRef,
+  EventEmitter
+} from '@angular/core';
 import { BoardService } from './board.service';
 import { Task } from '../app-task/task';
 import { Board } from './board';
@@ -8,6 +14,8 @@ import { TaskService } from '../app-task/task.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-board',
@@ -18,6 +26,8 @@ export class AppBoardComponent implements OnInit, OnDestroy {
   public board = new Board();
   private _tasks: Task[];
   private _tasksToUpdate = new Array<Task>();
+  private _dropModelObservable: Observable<EventEmitter<any>>;
+  private _subscription: Subscription;
 
   constructor(
     private _boardService: BoardService,
@@ -28,7 +38,8 @@ export class AppBoardComponent implements OnInit, OnDestroy {
     public toastr: ToastsManager,
     vcr: ViewContainerRef
   ) {
-    _dragulaService.dropModel.subscribe(value => {
+    this._dropModelObservable = _dragulaService.dropModel;
+    this._subscription = this._dropModelObservable.subscribe(value => {
       this._onDropModel(value);
     });
 
@@ -52,7 +63,7 @@ export class AppBoardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // this._dragulaService.dropModel.unsubscribe();
+    this._subscription.unsubscribe();
   }
 
   private _showError(msg) {
@@ -73,23 +84,16 @@ export class AppBoardComponent implements OnInit, OnDestroy {
   }
 
   private _onDropModel(args): void {
-    // tslint:disable-next-line:prefer-const
-    let elDropModel = args[1];
-    // tslint:disable-next-line:prefer-const
-    let targetDropModel = args[2];
-    // tslint:disable-next-line:prefer-const
-    let oldTaskGroupId = elDropModel.dataset.taskGroupId;
-    // tslint:disable-next-line:prefer-const
-    let newTaskGroupId =
+    const elDropModel = args[1];
+    const targetDropModel = args[2];
+
+    const oldTaskGroupId = elDropModel.dataset.taskGroupId;
+    const newTaskGroupId =
       targetDropModel.parentElement.parentElement.parentElement.parentElement
         .dataset.groupId;
-    // tslint:disable-next-line:prefer-const
-    let oldTasksList: Task[] = [];
-    // tslint:disable-next-line:prefer-const
-    let newTasksList: Task[] = [];
-    /* console.log(
-      `oldTaskGroupId: ${oldTaskGroupId}, newTaskGroupId: ${newTaskGroupId}`
-    ); */
+
+    const oldTasksList: Task[] = [];
+    const newTasksList: Task[] = [];
 
     this._getTasksToCheck(
       oldTaskGroupId,
@@ -104,19 +108,16 @@ export class AppBoardComponent implements OnInit, OnDestroy {
       this._checkTasksToUpdate(newTasksList, newTaskGroupId);
     }
 
-    console.log('_tasksToUpdate: ');
-    console.log(JSON.stringify(this._tasksToUpdate));
-
     this._taskService
       .updateTasksList(this._tasksToUpdate)
       .toPromise()
       .then(
         res => {
-          console.log(res);
           this._tasksToUpdate.length = 0;
         },
         err => {
           console.log(err);
+
           this._showError('For authorized users only');
           return setTimeout(() => {
             this._router.navigate(['/signin']);
