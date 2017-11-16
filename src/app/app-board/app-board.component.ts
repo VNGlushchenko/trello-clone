@@ -210,7 +210,7 @@ export class AppBoardComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getTaskData(event) {
+  public getTaskDetailsForModal(event) {
     let target = event.target;
 
     while (target !== this && target !== null) {
