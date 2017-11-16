@@ -43,6 +43,7 @@ export class AppBoardComponent implements OnInit, OnDestroy {
   private _tasksToUpdate = new Array<Task>();
   private _dropModelObservable: Observable<EventEmitter<any>>;
   private _subscription: Subscription;
+  private _isTaskEditable = false;
 
   @ViewChild('modal') modal: BsModalComponent;
 
@@ -54,7 +55,7 @@ export class AppBoardComponent implements OnInit, OnDestroy {
     private _bsModalService: BsModalService,
     private _router: Router,
     public toastr: ToastsManager,
-    vcr: ViewContainerRef
+    public vcr: ViewContainerRef
   ) {
     this._dropModelObservable = _dragulaService.dropModel;
     this._subscription = this._dropModelObservable.subscribe(value => {
@@ -223,7 +224,10 @@ export class AppBoardComponent implements OnInit, OnDestroy {
           item => item._id === target.dataset.taskId
         );
 
-        this._taskDetails = this.board.groups[groupIndex].tasks[taskIndex];
+        this._taskDetails = Object.assign(
+          {},
+          this.board.groups[groupIndex].tasks[taskIndex]
+        );
 
         if (!this._isModalSignInVisisble && this._isModalSignUpVisisble) {
           this.toggleAuthFormsVisible();
@@ -241,5 +245,9 @@ export class AppBoardComponent implements OnInit, OnDestroy {
   private toggleAuthFormsVisible() {
     this._isModalSignInVisisble = !this._isModalSignInVisisble;
     this._isModalSignUpVisisble = !this._isModalSignUpVisisble;
+  }
+
+  private _editTask() {
+    this._isTaskEditable = true;
   }
 }

@@ -37,22 +37,24 @@
         <bs-modal-body>
           <div class="form-group">
             <label for="title">Title</label>
-            <input [disabled]="true" type="text" class="form-control" required [(ngModel)]="_taskDetails.title" name="title" id="title">
+            <input [disabled]="!_isTaskEditable" type="text" class="form-control" required [(ngModel)]="_taskDetails.title" name="title"
+              id="title">
           </div>
           <div class="form-group">
             <label for="description">Description</label>
-            <input [disabled]="true" type="text" class="form-control" required [(ngModel)]="_taskDetails.description" name="description"
+            <input [disabled]="!_isTaskEditable" type="text" class="form-control" required [(ngModel)]="_taskDetails.description" name="description"
               id="description">
           </div>
           <div class="form-group">
             <label for="dueDate">dueDate</label>
-            <input [disabled]="true" type="date" class="form-control" required [(ngModel)]="_taskDetails.dueDate" name="dueDate" id="dueDate">
+            <input [disabled]="!_isTaskEditable" type="date" class="form-control" required [(ngModel)]="_taskDetails.dueDate" name="dueDate"
+              id="dueDate">
           </div>
         </bs-modal-body>
         <bs-modal-footer>
-          <button type="button" class="btn btn-default" data-dismiss="modal" (click)="modal.dismiss()">Delete</button>
-          <button type="button" class="btn btn-warning" data-dismiss="modal" (click)="modal.dismiss()">Edit</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal" (click)="modal.dismiss()">Save</button>
+          <button type="button" class="btn btn-default" (click)="modal.dismiss()">Delete</button>
+          <button type="button" class="btn btn-warning" (click)="_editTask()">Edit</button>
+          <button *ngIf="_isTaskEditable" type="button" class="btn btn-success" data-dismiss="modal" (click)="modal.dismiss()">Save</button>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal" (click)="modal.dismiss()">Cancel</button>
           <button type="button" class="btn btn-primary" [disabled]="!modalForm.valid" (click)="modal.close()">Close</button> -->
         </bs-modal-footer>
