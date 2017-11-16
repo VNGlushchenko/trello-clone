@@ -50,6 +50,6 @@ export class AuthService {
   }
 
   public checkUserCredentials() {
-    return !this.userCredentials.user && !this.userCredentials.token;
+    return this.userCredentials.user && this.userCredentials.token;
   }
 }

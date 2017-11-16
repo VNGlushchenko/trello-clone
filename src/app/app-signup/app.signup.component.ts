@@ -12,6 +12,7 @@ import { AuthService } from '../auth.service';
 })
 export class AppSignupComponent implements OnInit {
   user = new SignupModel();
+
   constructor(
     private _authService: AuthService,
     public toastr: ToastsManager,
@@ -37,9 +38,12 @@ export class AppSignupComponent implements OnInit {
       .toPromise()
       .then(
         res => {
+          this._authService.userCredentials.user = res['user'];
+          this._authService.userCredentials.token = res['token'];
+
           this.showSuccess(res['message']);
           return setTimeout(() => {
-            this._router.navigate(['/signin']);
+            this._router.navigate(['/']);
           }, 3000);
         },
         err => {

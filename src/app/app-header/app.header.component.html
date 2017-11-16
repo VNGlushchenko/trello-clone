@@ -4,13 +4,9 @@
       <a class="navbar-brand" routerLink="/" routerLinkActive="active">
         <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
       </a>
-      <button *ngIf="!_authService.userCredentials.user && !_authService.userCredentials.token" type="button" class="btn btn-default navbar-btn"
-        (click)="goToSignup()">Sign up</button>
-      <button *ngIf="!_authService.userCredentials.user && !_authService.userCredentials.token" type="button" class="btn btn-success navbar-btn"
-        (click)="goToSignIn()">Sign in</button>
-      <button *ngIf="_authService.userCredentials.user && _authService.userCredentials.token" type="button" class="btn btn-info navbar-btn"
-        (click)="logOut()">Log out</button>
-      <button type="button" class="btn btn-default navbar-btn" (click)="testMongo()">Test Mongo</button>
+      <button *ngIf="!_authService.checkUserCredentials()" type="button" class="btn btn-default navbar-btn" (click)="goToSignup()">Sign up</button>
+      <button *ngIf="!_authService.checkUserCredentials()" type="button" class="btn btn-warning navbar-btn" (click)="goToSignIn()">Sign in</button>
+      <button *ngIf="_authService.checkUserCredentials()" type="button" class="btn btn-danger navbar-btn" (click)="logOut()">Log out</button>
     </div>
   </div>
 </nav>

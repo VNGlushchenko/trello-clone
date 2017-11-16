@@ -4,7 +4,10 @@ import {
   OnInit,
   OnDestroy,
   ViewContainerRef,
-  EventEmitter
+  EventEmitter,
+  QueryList,
+  ViewChildren,
+  ViewChild
 } from '@angular/core';
 import { BoardService } from './board.service';
 import { Task } from '../app-task/task';
@@ -16,6 +19,7 @@ import { AuthService } from '../auth.service';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { BsModalComponent, BsModalService } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 @Component({
   selector: 'app-board',
@@ -25,15 +29,29 @@ import { Subscription } from 'rxjs/Subscription';
 export class AppBoardComponent implements OnInit, OnDestroy {
   public board = new Board();
   private _tasks: Task[];
+  private _taskDetails: Task = {
+    _id: '',
+    title: '',
+    description: '',
+    dueDate: new Date(),
+    boardId: '',
+    groupId: '',
+    order: 0
+  };
+  private _isModalSignInVisisble = true;
+  private _isModalSignUpVisisble = false;
   private _tasksToUpdate = new Array<Task>();
   private _dropModelObservable: Observable<EventEmitter<any>>;
   private _subscription: Subscription;
+
+  @ViewChild('modal') modal: BsModalComponent;
 
   constructor(
     private _boardService: BoardService,
     private _dragulaService: DragulaService,
     private _taskService: TaskService,
     private _authService: AuthService,
+    private _bsModalService: BsModalService,
     private _router: Router,
     public toastr: ToastsManager,
     vcr: ViewContainerRef
@@ -64,6 +82,10 @@ export class AppBoardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this._subscription.unsubscribe();
+  }
+
+  public openModal() {
+    this.modal.open();
   }
 
   private _showError(msg) {
@@ -180,11 +202,44 @@ export class AppBoardComponent implements OnInit, OnDestroy {
   }
 
   private _checkUserCredentials() {
-    if (this._authService.checkUserCredentials()) {
+    if (!this._authService.checkUserCredentials()) {
       this._showError('For authorized users only');
       return setTimeout(() => {
         this._router.navigate(['/signin']);
       }, 3000);
     }
+  }
+
+  public getTaskData(event) {
+    let target = event.target;
+
+    while (target !== this && target !== null) {
+      if (target.tagName === 'APP-TASK') {
+        const groupIndex = this.board.groups.findIndex(
+          item => item._id === target.dataset.taskGroupId
+        );
+
+        const taskIndex = this.board.groups[groupIndex].tasks.findIndex(
+          item => item._id === target.dataset.taskId
+        );
+
+        this._taskDetails = this.board.groups[groupIndex].tasks[taskIndex];
+
+        if (!this._isModalSignInVisisble && this._isModalSignUpVisisble) {
+          this.toggleAuthFormsVisible();
+        }
+
+        this.openModal();
+
+        return;
+      }
+
+      target = target.parentNode;
+    }
+  }
+
+  private toggleAuthFormsVisible() {
+    this._isModalSignInVisisble = !this._isModalSignInVisisble;
+    this._isModalSignUpVisisble = !this._isModalSignUpVisisble;
   }
 }

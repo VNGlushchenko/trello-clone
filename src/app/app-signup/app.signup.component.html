@@ -1,9 +1,9 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-4 col-md-offset-4">
+    <div class="col-md-6 col-md-offset-3">
       <h3 class="text-center">Sign up</h3>
     </div>
-    <div class="col-md-4 col-md-offset-4 well">
+    <div class="col-md-6 col-md-offset-3 well">
       <form #signUpForm="ngForm" (ngSubmit)="onSubmit(user)">
         <div class="form-group">
           <label for="username">Name</label>
@@ -41,7 +41,7 @@
           <div *ngIf="confirmedPasswordModel.hasError('minlength')" class="alert alert-danger">Password must contain 8 symbols at least</div>
           <div *ngIf="confirmedPasswordModel.hasError('checkPassword')" class="alert alert-danger">Passwords do not match each other</div>
         </div>
-        <button type="submit" class="btn btn-default" [disabled]="!signUpForm.form.valid">Submit</button>
+        <button type="submit" class="btn btn-success btn-block" [disabled]="!signUpForm.form.valid">Submit</button>
       </form>
     </div>
   </div>

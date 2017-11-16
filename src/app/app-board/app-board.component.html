@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <div class="row">
+  <div class="row" (click)="getTaskData($event)">
     <app-group *ngFor="let group of board.groups" [attr.data-group-board-id]="group.boardId" [attr.data-group-id]="group._id"
       [attr.data-group-order]="group.order" [group]="group"></app-group>
     <div class="col-sm-3">
@@ -14,5 +14,50 @@
         </div>
       </div>
     </div>
+
+    <bs-modal #modal>
+
+      <div *ngIf="!_authService.checkUserCredentials()">
+        <div *ngIf="_isModalSignInVisisble" class="container-fluid">
+          <app-signin></app-signin>
+          <div class="row" style="margin-top:-20px;">
+            <h4 class="text-center">or</h4>
+            <div class="col-md-4 col-md-offset-5" style="margin-bottom:20px;">
+              <button type="button" class="btn btn-info" (click)="toggleAuthFormsVisible()">Sign up</button>
+            </div>
+          </div>
+        </div>
+        <app-signup *ngIf="_isModalSignUpVisisble"></app-signup>
+      </div>
+
+      <form #modalForm="ngForm" *ngIf="_authService.checkUserCredentials()">
+        <bs-modal-header [showDismiss]="true">
+          <h4 class="modal-title">Task details</h4>
+        </bs-modal-header>
+        <bs-modal-body>
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input [disabled]="true" type="text" class="form-control" required [(ngModel)]="_taskDetails.title" name="title" id="title">
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <input [disabled]="true" type="text" class="form-control" required [(ngModel)]="_taskDetails.description" name="description"
+              id="description">
+          </div>
+          <div class="form-group">
+            <label for="dueDate">dueDate</label>
+            <input [disabled]="true" type="date" class="form-control" required [(ngModel)]="_taskDetails.dueDate" name="dueDate" id="dueDate">
+          </div>
+        </bs-modal-body>
+        <bs-modal-footer>
+          <button type="button" class="btn btn-default" data-dismiss="modal" (click)="modal.dismiss()">Delete</button>
+          <button type="button" class="btn btn-warning" data-dismiss="modal" (click)="modal.dismiss()">Edit</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" (click)="modal.dismiss()">Save</button>
+          <!-- <button type="button" class="btn btn-default" data-dismiss="modal" (click)="modal.dismiss()">Cancel</button>
+          <button type="button" class="btn btn-primary" [disabled]="!modalForm.valid" (click)="modal.close()">Close</button> -->
+        </bs-modal-footer>
+      </form>
+    </bs-modal>
+
   </div>
 </div>

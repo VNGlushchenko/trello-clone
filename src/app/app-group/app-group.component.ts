@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, ViewContainerRef } from '@angular/core';
+import { Task } from '../app-task/task';
+import {
+  Component,
+  OnInit,
+  Input,
+  ViewContainerRef,
+  Output,
+  EventEmitter
+} from '@angular/core';
 import { Group } from './group';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { Router } from '@angular/router';
@@ -35,7 +43,7 @@ export class AppGroupComponent implements OnInit {
   }
 
   private _checkUserCredentials() {
-    if (this._authService.checkUserCredentials()) {
+    if (!this._authService.checkUserCredentials()) {
       this._showError('For authorized users only');
       return setTimeout(() => {
         this._router.navigate(['/signin']);

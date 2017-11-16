@@ -2,7 +2,7 @@
   <div class="panel panel-default">
     <div class="panel-heading">{{group.title}}</div>
     <div class="panel-body">
-      <div [dragula]="'bag-one'" [dragulaModel]='group.tasks'>
+      <div [dragula]="'bag-one'" [dragulaModel]='group.tasks' [attr.data-dragula-group-id]="group._id">
         <app-task *ngFor="let task of group.tasks;let i = index;" [attr.data-task-id]="task._id" [attr.data-task-order]="task.order"
           [attr.data-task-group-id]="task.groupId" [attr.data-task-board-id]="task.boardId" [task]="task">
         </app-task>

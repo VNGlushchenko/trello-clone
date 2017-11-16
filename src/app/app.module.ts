@@ -1,3 +1,4 @@
+import { BsModalModule, BsModalService } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { DragulaModule } from 'ng2-dragula/components/dragular.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -46,12 +47,14 @@ import { CustomToastOptions } from './toast.options';
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot(ROUTES),
-    DragulaModule
+    DragulaModule,
+    BsModalModule
   ],
   providers: [
     AuthService,
     BoardService,
     TaskService,
+    BsModalService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

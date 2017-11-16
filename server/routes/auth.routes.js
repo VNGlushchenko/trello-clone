@@ -128,13 +128,23 @@ module.exports = function(app, api) {
           password: req.body.password
         });
 
-        newUser.save(function(err) {
+        newUser.save(function(err, user) {
           if (err) throw err;
 
           console.log('User has been successfully saved');
 
-          res.status(200).send({
-            message: 'You have successfully registered.'
+          const payload = {
+            client: user._id,
+            uid: user.email,
+            exp: new Date().setDate(new Date().getDate() + 1)
+          };
+
+          const token = jwt.sign(payload, jwtSecret);
+
+          res.json({
+            message: 'You have successfully registered.',
+            user: user.email,
+            token: token
           });
         });
       }
