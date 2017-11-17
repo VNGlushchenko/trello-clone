@@ -44,8 +44,10 @@ export class AppBoardComponent implements OnInit, OnDestroy {
   private _dropModelObservable: Observable<EventEmitter<any>>;
   private _subscription: Subscription;
   private _isTaskEditable = false;
+  private _isLoaderVisible = false;
 
-  @ViewChild('modal') modal: BsModalComponent;
+  @ViewChild('taskDetailModal') modal1: BsModalComponent;
+  @ViewChild('taskDeletingModal') modal2: BsModalComponent;
 
   constructor(
     private _boardService: BoardService,
@@ -85,8 +87,8 @@ export class AppBoardComponent implements OnInit, OnDestroy {
     this._subscription.unsubscribe();
   }
 
-  public openModal() {
-    this.modal.open();
+  public openModal(modal) {
+    modal.open();
   }
 
   private _showError(msg) {
@@ -233,7 +235,7 @@ export class AppBoardComponent implements OnInit, OnDestroy {
           this.toggleAuthFormsVisible();
         }
 
-        this.openModal();
+        this.openModal(this.modal1);
 
         return;
       }
@@ -249,5 +251,11 @@ export class AppBoardComponent implements OnInit, OnDestroy {
 
   private _editTask() {
     this._isTaskEditable = true;
+  }
+
+  private _runTaskDeletion() {
+    this.modal2.close();
+    this._isLoaderVisible = true;
+    console.log(this._taskDetails._id);
   }
 }

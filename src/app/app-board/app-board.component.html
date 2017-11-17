@@ -15,14 +15,14 @@
       </div>
     </div>
 
-    <bs-modal #modal>
+    <bs-modal #taskDetailModal>
 
       <div *ngIf="!_authService.checkUserCredentials()">
         <div *ngIf="_isModalSignInVisisble" class="container-fluid">
           <app-signin></app-signin>
-          <div class="row" style="margin-top:-20px;">
+          <div class="row" [style.marginTop.px]="-20">
             <h4 class="text-center">or</h4>
-            <div class="col-md-4 col-md-offset-5" style="margin-bottom:20px;">
+            <div class="col-md-4 col-md-offset-5" [style.marginBottom.px]="20">
               <button type="button" class="btn btn-info" (click)="toggleAuthFormsVisible()">Sign up</button>
             </div>
           </div>
@@ -35,30 +35,48 @@
           <h4 class="modal-title">Task details</h4>
         </bs-modal-header>
         <bs-modal-body>
-          <div class="form-group">
+          <div class="loader" *ngIf="_isLoaderVisible"></div>
+          <div class="form-group" [style.visibility]="!_isLoaderVisible ? 'visible' : 'hidden'">
             <label for="title">Title</label>
             <input [disabled]="!_isTaskEditable" type="text" class="form-control" required [(ngModel)]="_taskDetails.title" name="title"
               id="title">
           </div>
-          <div class="form-group">
+          <div class="form-group" [style.visibility]="!_isLoaderVisible ? 'visible' : 'hidden'">
             <label for="description">Description</label>
             <input [disabled]="!_isTaskEditable" type="text" class="form-control" required [(ngModel)]="_taskDetails.description" name="description"
               id="description">
           </div>
-          <div class="form-group">
+          <div class="form-group" [style.visibility]="!_isLoaderVisible ? 'visible' : 'hidden'">
             <label for="dueDate">dueDate</label>
             <input [disabled]="!_isTaskEditable" type="date" class="form-control" required [(ngModel)]="_taskDetails.dueDate" name="dueDate"
               id="dueDate">
           </div>
+          <div class="row" *ngIf="_isLoaderVisible" [style.marginBottom.px]="-20">
+            <h5 class="text-center">Please, wait...</h5>
+          </div>
         </bs-modal-body>
         <bs-modal-footer>
-          <button type="button" class="btn btn-default" (click)="modal.dismiss()">Delete</button>
-          <button type="button" class="btn btn-warning" (click)="_editTask()">Edit</button>
-          <button *ngIf="_isTaskEditable" type="button" class="btn btn-success" data-dismiss="modal" (click)="modal.dismiss()">Save</button>
-          <!-- <button type="button" class="btn btn-default" data-dismiss="modal" (click)="modal.dismiss()">Cancel</button>
-          <button type="button" class="btn btn-primary" [disabled]="!modalForm.valid" (click)="modal.close()">Close</button> -->
+          <button [style.visibility]="!_isLoaderVisible ? 'visible' : 'hidden'" type="button" class="btn btn-default" (click)="taskDeletingModal.open(model2)">Delete</button>
+          <button [style.visibility]="!_isLoaderVisible ? 'visible' : 'hidden'" type="button" class="btn btn-warning" (click)="_editTask()">Edit</button>
+          <button *ngIf="_isTaskEditable" type="button" class="btn btn-success" data-dismiss="modal" (click)="taskDetailModal.dismiss()">Save</button>
+          <button type="button" class="btn btn-default" (click)="taskDetailModal.close()">Close</button>
         </bs-modal-footer>
       </form>
+    </bs-modal>
+
+    <bs-modal #taskDeletingModal>
+      <bs-modal-header [showDismiss]="true">
+        <h4 class="modal-title">Confirmation of deletion</h4>
+      </bs-modal-header>
+      <bs-modal-body>
+        <div>
+          <h3>Do you confirm deletion of this task?</h3>
+        </div>
+      </bs-modal-body>
+      <bs-modal-footer>
+        <button type="button" class="btn btn-default" (click)="_runTaskDeletion()">Yes</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="taskDeletingModal.dismiss()">Cancel</button>
+      </bs-modal-footer>
     </bs-modal>
 
   </div>
