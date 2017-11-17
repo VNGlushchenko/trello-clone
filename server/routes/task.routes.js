@@ -111,14 +111,21 @@ module.exports = function(app, strategy) {
 
   //Delete
   app.delete('/task/:id', strategy, function(req, res) {
-    Task.findByIdAndRemove(req.params.id, function(err) {
+    Task.findByIdAndRemove(req.params.id, function(err, task) {
       if (err)
         res.json({
           error: err
         });
-      res.json({
-        message: 'Task was deleted successfully'
-      });
+
+      if (!task) {
+        res.json({
+          message: 'Task does not exist'
+        });
+      } else {
+        res.json({
+          message: 'Task was deleted successfully'
+        });
+      }
     });
   });
 };

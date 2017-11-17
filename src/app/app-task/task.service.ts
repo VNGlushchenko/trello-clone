@@ -5,11 +5,28 @@ import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class TaskService {
-  apiUrl = '/api';
+  private _apiUrl = '/api';
+
+  tasksToUpdate = new Array<Task>();
+  taskDetails: Task = {
+    _id: '',
+    title: '',
+    description: '',
+    dueDate: new Date(),
+    boardId: '',
+    groupId: '',
+    order: 0
+  };
+
+  taskDeletionMsg = '';
 
   constructor(private _http: HttpClient) {}
 
-  updateTasksList(list: Task[]) {
-    return this._http.put(`${this.apiUrl}/tasks`, { data: list });
+  public updateTasksList(list: Task[]): Observable<Object> {
+    return this._http.put(`${this._apiUrl}/tasks`, { data: list });
+  }
+
+  public deleteTask(id: string): Observable<Object> {
+    return this._http.delete(`${this._apiUrl}/task/${id}`);
   }
 }

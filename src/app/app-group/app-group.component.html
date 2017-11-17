@@ -1,5 +1,5 @@
 <div class="col-sm-3">
-  <div class="panel panel-default">
+  <div class="panel panel-info">
     <div class="panel-heading">{{group.title}}</div>
     <div class="panel-body">
       <div [dragula]="'bag-one'" [dragulaModel]='group.tasks' [attr.data-dragula-group-id]="group._id">
@@ -10,7 +10,7 @@
       <div class="well">
         <form>
           <div class="form-group">
-            <input type="text" class="form-control" placeholder="Add a task..." (focus)="_checkUserCredentials()">
+            <input type="text" class="form-control" placeholder="Add a task..." (focus)="checkUserCredentials()">
           </div>
           <button type="button" class="btn btn-default">Save</button>
         </form>

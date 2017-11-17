@@ -1,13 +1,13 @@
 <div class="container-fluid">
-  <div class="row" (click)="getTaskDetailsForModal($event)">
-    <app-group *ngFor="let group of board.groups" [attr.data-group-board-id]="group.boardId" [attr.data-group-id]="group._id"
+  <div class="row" (click)="getTaskDetailsForModal($event)" id="board">
+    <app-group *ngFor="let group of _boardService.board.groups" [attr.data-group-board-id]="group.boardId" [attr.data-group-id]="group._id"
       [attr.data-group-order]="group.order" [group]="group"></app-group>
     <div class="col-sm-3">
       <div class="panel panel-default">
         <div class="panel-body">
           <form>
             <div class="form-group">
-              <input type="text" class="form-control" placeholder="Add a group..." (focus)="_checkUserCredentials()">
+              <input type="text" class="form-control" placeholder="Add a group..." (focus)="checkUserCredentials()">
             </div>
             <button type="button" class="btn btn-default">Save</button>
           </form>
@@ -15,10 +15,10 @@
       </div>
     </div>
 
-    <bs-modal #taskDetailModal>
+    <bs-modal #taskDetailsModal>
 
       <div *ngIf="!_authService.checkUserCredentials()">
-        <div *ngIf="_isModalSignInVisisble" class="container-fluid">
+        <div *ngIf="isModalSignInVisible" class="container-fluid">
           <app-signin></app-signin>
           <div class="row" [style.marginTop.px]="-20">
             <h4 class="text-center">or</h4>
@@ -27,7 +27,7 @@
             </div>
           </div>
         </div>
-        <app-signup *ngIf="_isModalSignUpVisisble"></app-signup>
+        <app-signup *ngIf="isModalSignUpVisible"></app-signup>
       </div>
 
       <form #modalForm="ngForm" *ngIf="_authService.checkUserCredentials()">
@@ -35,36 +35,39 @@
           <h4 class="modal-title">Task details</h4>
         </bs-modal-header>
         <bs-modal-body>
-          <div class="loader" *ngIf="_isLoaderVisible"></div>
-          <div class="form-group" [style.visibility]="!_isLoaderVisible ? 'visible' : 'hidden'">
+          <div class="loader" *ngIf="isLoaderVisible"></div>
+          <div class="form-group" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'">
             <label for="title">Title</label>
-            <input [disabled]="!_isTaskEditable" type="text" class="form-control" required [(ngModel)]="_taskDetails.title" name="title"
-              id="title">
+            <input [disabled]="!isTaskEditable" type="text" class="form-control" required [(ngModel)]="_taskService.taskDetails.title"
+              name="title" id="title">
           </div>
-          <div class="form-group" [style.visibility]="!_isLoaderVisible ? 'visible' : 'hidden'">
+          <div class="form-group" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'">
             <label for="description">Description</label>
-            <input [disabled]="!_isTaskEditable" type="text" class="form-control" required [(ngModel)]="_taskDetails.description" name="description"
-              id="description">
+            <input [disabled]="!isTaskEditable" type="text" class="form-control" required [(ngModel)]="_taskService.taskDetails.description"
+              name="description" id="description">
           </div>
-          <div class="form-group" [style.visibility]="!_isLoaderVisible ? 'visible' : 'hidden'">
+          <div class="form-group" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'">
             <label for="dueDate">dueDate</label>
-            <input [disabled]="!_isTaskEditable" type="date" class="form-control" required [(ngModel)]="_taskDetails.dueDate" name="dueDate"
-              id="dueDate">
+            <input [disabled]="!isTaskEditable" type="date" class="form-control" required [(ngModel)]="_taskService.taskDetails.dueDate"
+              name="dueDate" id="dueDate">
           </div>
-          <div class="row" *ngIf="_isLoaderVisible" [style.marginBottom.px]="-20">
+          <div class="row" *ngIf="isLoaderVisible" [style.marginBottom.px]="-20">
             <h5 class="text-center">Please, wait...</h5>
+          </div>
+          <div class="row" *ngIf="!isLoaderVisible">
+            <h3 class="text-center">{{_taskService.taskDeletionMsg}}</h3>
           </div>
         </bs-modal-body>
         <bs-modal-footer>
-          <button [style.visibility]="!_isLoaderVisible ? 'visible' : 'hidden'" type="button" class="btn btn-default" (click)="taskDeletingModal.open(model2)">Delete</button>
-          <button [style.visibility]="!_isLoaderVisible ? 'visible' : 'hidden'" type="button" class="btn btn-warning" (click)="_editTask()">Edit</button>
-          <button *ngIf="_isTaskEditable" type="button" class="btn btn-success" data-dismiss="modal" (click)="taskDetailModal.dismiss()">Save</button>
-          <button type="button" class="btn btn-default" (click)="taskDetailModal.close()">Close</button>
+          <button [style.visibility]="!isTaskVisible ? 'visible' : 'hidden'" type="button" class="btn btn-default" (click)="taskDeletionModal.open(model2)">Delete</button>
+          <button [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'" type="button" class="btn btn-warning" (click)="editTask()">Edit</button>
+          <button *ngIf="isTaskEditable" type="button" class="btn btn-success" data-dismiss="modal" (click)="taskDetailsModal.dismiss()">Save</button>
+          <button type="button" class="btn btn-default" (click)="taskDetailsModal.close()">Close</button>
         </bs-modal-footer>
       </form>
     </bs-modal>
 
-    <bs-modal #taskDeletingModal>
+    <bs-modal #taskDeletionModal>
       <bs-modal-header [showDismiss]="true">
         <h4 class="modal-title">Confirmation of deletion</h4>
       </bs-modal-header>
@@ -74,8 +77,8 @@
         </div>
       </bs-modal-body>
       <bs-modal-footer>
-        <button type="button" class="btn btn-default" (click)="_runTaskDeletion()">Yes</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="taskDeletingModal.dismiss()">Cancel</button>
+        <button type="button" class="btn btn-default" (click)="runTaskDeletion()">Yes</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="taskDeletionModal.dismiss()">Cancel</button>
       </bs-modal-footer>
     </bs-modal>
 

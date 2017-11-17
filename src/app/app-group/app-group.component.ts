@@ -25,10 +25,10 @@ export class AppGroupComponent implements OnInit {
   constructor(
     private _authService: AuthService,
     private _router: Router,
-    public toastr: ToastsManager,
-    vcr: ViewContainerRef
+    private _toastr: ToastsManager,
+    private _vcr: ViewContainerRef
   ) {
-    this.toastr.setRootViewContainerRef(vcr);
+    this._toastr.setRootViewContainerRef(_vcr);
   }
 
   ngOnInit() {
@@ -38,13 +38,13 @@ export class AppGroupComponent implements OnInit {
     this.changedGroup.order = this.group.order;
   }
 
-  private _showError(msg) {
-    this.toastr.error(msg, 'Oops!', { toastLife: 3000 });
+  showError(msg) {
+    this._toastr.error(msg, 'Oops!', { toastLife: 3000 });
   }
 
-  private _checkUserCredentials() {
+  checkUserCredentials() {
     if (!this._authService.checkUserCredentials()) {
-      this._showError('For authorized users only');
+      this.showError('For authorized users only');
       return setTimeout(() => {
         this._router.navigate(['/signin']);
       }, 3000);

@@ -1,25 +1,23 @@
-import { DragulaService } from 'ng2-dragula/components/dragula.provider';
 import {
   Component,
+  EventEmitter,
   OnInit,
   OnDestroy,
-  ViewContainerRef,
-  EventEmitter,
-  QueryList,
-  ViewChildren,
-  ViewChild
+  ViewChild,
+  ViewContainerRef
 } from '@angular/core';
-import { BoardService } from './board.service';
-import { Task } from '../app-task/task';
-import { Board } from './board';
-import { Group } from '../app-group/group';
-import { TaskService } from '../app-task/task.service';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth.service';
-import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { DragulaService } from 'ng2-dragula/components/dragula.provider';
 import { BsModalComponent, BsModalService } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import { BoardService } from './board.service';
+import { TaskService } from '../app-task/task.service';
+import { AuthService } from '../auth.service';
+import { Board } from './board';
+import { Group } from '../app-group/group';
+import { Task } from '../app-task/task';
 
 @Component({
   selector: 'app-board',
@@ -27,44 +25,32 @@ import { BsModalComponent, BsModalService } from 'ng2-bs3-modal/ng2-bs3-modal';
   styleUrls: ['./app-board.component.css']
 })
 export class AppBoardComponent implements OnInit, OnDestroy {
-  public board = new Board();
-  private _tasks: Task[];
-  private _taskDetails: Task = {
-    _id: '',
-    title: '',
-    description: '',
-    dueDate: new Date(),
-    boardId: '',
-    groupId: '',
-    order: 0
-  };
-  private _isModalSignInVisisble = true;
-  private _isModalSignUpVisisble = false;
-  private _tasksToUpdate = new Array<Task>();
   private _dropModelObservable: Observable<EventEmitter<any>>;
   private _subscription: Subscription;
-  private _isTaskEditable = false;
-  private _isLoaderVisible = false;
+  isModalSignInVisible = true;
+  isModalSignUpVisible = false;
+  isTaskEditable = false;
+  isLoaderVisible = false;
 
-  @ViewChild('taskDetailModal') modal1: BsModalComponent;
-  @ViewChild('taskDeletingModal') modal2: BsModalComponent;
+  @ViewChild('taskDetailsModal') modal1: BsModalComponent;
+  @ViewChild('taskDeletionModal') modal2: BsModalComponent;
 
   constructor(
-    private _boardService: BoardService,
     private _dragulaService: DragulaService,
+    private _bsModalService: BsModalService,
+    private _boardService: BoardService,
     private _taskService: TaskService,
     private _authService: AuthService,
-    private _bsModalService: BsModalService,
     private _router: Router,
-    public toastr: ToastsManager,
-    public vcr: ViewContainerRef
+    private _toastr: ToastsManager,
+    private _vcr: ViewContainerRef
   ) {
     this._dropModelObservable = _dragulaService.dropModel;
     this._subscription = this._dropModelObservable.subscribe(value => {
       this._onDropModel(value);
     });
 
-    this.toastr.setRootViewContainerRef(vcr);
+    this._toastr.setRootViewContainerRef(_vcr);
   }
 
   ngOnInit() {
@@ -72,13 +58,16 @@ export class AppBoardComponent implements OnInit, OnDestroy {
       this._boardService
         .getBoardWithGroupsAndTasks(res['_id'])
         .subscribe(data => {
-          this.board._id = data[0]['_id'];
-          this.board.title = data[0]['title'];
-          this.board.groups = <Group[]>data[1];
+          this._boardService.board._id = data[0]['_id'];
+          this._boardService.board.title = data[0]['title'];
+          this._boardService.board.groups = <Group[]>data[1];
 
-          this._tasks = <Task[]>data[2];
+          this._boardService.tasks = <Task[]>data[2];
 
-          this._distributeTasksOnGroups(this._tasks, this.board.groups);
+          this._boardService.distributeTasksOnGroups(
+            this._boardService.tasks,
+            this._boardService.board.groups
+          );
         });
     });
   }
@@ -87,28 +76,19 @@ export class AppBoardComponent implements OnInit, OnDestroy {
     this._subscription.unsubscribe();
   }
 
-  public openModal(modal) {
+  // It opens modal window
+  openModal(modal: BsModalComponent): void {
     modal.open();
   }
 
-  private _showError(msg) {
-    this.toastr.error(msg, 'Oops!', { toastLife: 3000 });
+  // It shows error massage
+  showErrorMsg(msg: string): void {
+    this._toastr.error(msg, 'Oops!', { toastLife: 3000 });
   }
 
-  private _distributeTasksOnGroups(source, destination): void {
-    for (let i = 0; i < destination.length; i++) {
-      destination[i].tasks = new Array<Task>();
-      for (let j = 0; j < source.length; j++) {
-        if (this._tasks[j].groupId === destination[i]._id) {
-          destination[i].tasks.push(source[j]);
-        } else {
-          continue;
-        }
-      }
-    }
-  }
-
-  private _onDropModel(args): void {
+  // --------------------------------------------------------------------------
+  // It processes drag and drop of tasks inside groups and between ones -- BEGIN
+  private _onDropModel(args: EventEmitter<any>): void {
     const elDropModel = args[1];
     const targetDropModel = args[2];
 
@@ -134,23 +114,26 @@ export class AppBoardComponent implements OnInit, OnDestroy {
     }
 
     this._taskService
-      .updateTasksList(this._tasksToUpdate)
+      .updateTasksList(this._taskService.tasksToUpdate)
       .toPromise()
       .then(
         res => {
-          this._tasksToUpdate.length = 0;
+          this._taskService.tasksToUpdate.length = 0;
         },
         err => {
           console.log(err);
 
-          this._showError('For authorized users only');
+          this.showErrorMsg('For authorized users only');
           return setTimeout(() => {
             this._router.navigate(['/signin']);
           }, 3000);
         }
       );
   }
+  // It processes drag and drop of tasks inside groups and between ones -- END
+  // --------------------------------------------------------------------------
 
+  // ancillary functions for _onDropModel -- BEGIN
   private _getTasksToCheck(
     oldGroupId: string,
     newGroupId: string,
@@ -166,9 +149,9 @@ export class AppBoardComponent implements OnInit, OnDestroy {
   }
 
   private _findTasksByGroupId(groupId: string, tasksList: Task[]): void {
-    for (let i = 0; i < this.board.groups.length; i++) {
-      if (this.board.groups[i]._id === groupId) {
-        this.board.groups[i].tasks.forEach(item => {
+    for (let i = 0; i < this._boardService.board.groups.length; i++) {
+      if (this._boardService.board.groups[i]._id === groupId) {
+        this._boardService.board.groups[i].tasks.forEach(item => {
           tasksList.push(item);
         });
         break;
@@ -178,24 +161,26 @@ export class AppBoardComponent implements OnInit, OnDestroy {
 
   private _checkTasksToUpdate(tasksList: Task[], taskGroupId: string): void {
     for (let i = 0; i < tasksList.length; i++) {
+      // if task was dragged and dropped inside the same group
       if (tasksList[i].groupId === taskGroupId) {
         if (tasksList[i].order !== i + 1) {
           tasksList[i].order = i + 1;
 
-          this._tasksToUpdate.push(<Task>{
+          this._taskService.tasksToUpdate.push(<Task>{
             _id: tasksList[i]._id,
             groupId: tasksList[i].groupId,
             order: tasksList[i].order
           });
         }
       } else {
+        // if task was dragged and dropped from one group into another
         tasksList[i].groupId = taskGroupId;
 
         if (tasksList[i].order !== i + 1) {
           tasksList[i].order = i + 1;
         }
 
-        this._tasksToUpdate.push(<Task>{
+        this._taskService.tasksToUpdate.push(<Task>{
           _id: tasksList[i]._id,
           groupId: tasksList[i].groupId,
           order: tasksList[i].order
@@ -203,35 +188,37 @@ export class AppBoardComponent implements OnInit, OnDestroy {
       }
     }
   }
+  // ancillary functions for _onDropModel -- END
 
-  private _checkUserCredentials() {
+  checkUserCredentials() {
     if (!this._authService.checkUserCredentials()) {
-      this._showError('For authorized users only');
+      this.showErrorMsg('For authorized users only');
       return setTimeout(() => {
         this._router.navigate(['/signin']);
       }, 3000);
     }
   }
 
-  public getTaskDetailsForModal(event) {
+  // getting of a task details after authorized user clicked at it
+  getTaskDetailsForModal(event: MouseEvent) {
     let target = event.target;
 
-    while (target !== this && target !== null) {
-      if (target.tagName === 'APP-TASK') {
-        const groupIndex = this.board.groups.findIndex(
-          item => item._id === target.dataset.taskGroupId
+    while (target !== null) {
+      if (target['tagName'] === 'APP-TASK') {
+        const groupIndex = this._boardService.board.groups.findIndex(
+          item => item._id === target['dataset'].taskGroupId
         );
 
-        const taskIndex = this.board.groups[groupIndex].tasks.findIndex(
-          item => item._id === target.dataset.taskId
-        );
+        const taskIndex = this._boardService.board.groups[
+          groupIndex
+        ].tasks.findIndex(item => item._id === target['dataset'].taskId);
 
-        this._taskDetails = Object.assign(
+        this._taskService.taskDetails = Object.assign(
           {},
-          this.board.groups[groupIndex].tasks[taskIndex]
+          this._boardService.board.groups[groupIndex].tasks[taskIndex]
         );
 
-        if (!this._isModalSignInVisisble && this._isModalSignUpVisisble) {
+        if (!this.isModalSignInVisible && this.isModalSignUpVisible) {
           this.toggleAuthFormsVisible();
         }
 
@@ -240,22 +227,32 @@ export class AppBoardComponent implements OnInit, OnDestroy {
         return;
       }
 
-      target = target.parentNode;
+      target = target['parentNode'];
     }
   }
 
-  private toggleAuthFormsVisible() {
-    this._isModalSignInVisisble = !this._isModalSignInVisisble;
-    this._isModalSignUpVisisble = !this._isModalSignUpVisisble;
+  toggleAuthFormsVisible() {
+    this.isModalSignInVisible = !this.isModalSignInVisible;
+    this.isModalSignUpVisible = !this.isModalSignUpVisible;
   }
 
-  private _editTask() {
-    this._isTaskEditable = true;
+  editTask() {
+    this.isTaskEditable = true;
   }
 
-  private _runTaskDeletion() {
+  runTaskDeletion() {
     this.modal2.close();
-    this._isLoaderVisible = true;
-    console.log(this._taskDetails._id);
+    this.isLoaderVisible = true;
+    this._taskService
+      .deleteTask(this._taskService.taskDetails._id)
+      .toPromise()
+      .then(
+        res => {
+          console.log(res);
+          this.isLoaderVisible = false;
+          this._taskService.taskDeletionMsg = res['message'];
+        },
+        err => console.log(err)
+      );
   }
 }
