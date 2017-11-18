@@ -36,31 +36,33 @@
         </bs-modal-header>
         <bs-modal-body>
           <div class="loader" *ngIf="isLoaderVisible"></div>
-          <div class="form-group" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'">
+          <div class="form-group" *ngIf="!isTaskDeleted" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'">
             <label for="title">Title</label>
             <input [disabled]="!isTaskEditable" type="text" class="form-control" required [(ngModel)]="_taskService.taskDetails.title"
               name="title" id="title">
           </div>
-          <div class="form-group" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'">
+          <div class="form-group" *ngIf="!isTaskDeleted" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'">
             <label for="description">Description</label>
             <input [disabled]="!isTaskEditable" type="text" class="form-control" required [(ngModel)]="_taskService.taskDetails.description"
               name="description" id="description">
           </div>
-          <div class="form-group" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'">
+          <div class="form-group" *ngIf="!isTaskDeleted" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'">
             <label for="dueDate">dueDate</label>
-            <input [disabled]="!isTaskEditable" type="date" class="form-control" required [(ngModel)]="_taskService.taskDetails.dueDate"
+            <input [isDisabled]="!isTaskEditable" type="text" class="form-control" bsDatepicker [bsConfig]="{locale: 'en'}" [(ngModel)]="_taskService.taskDetails.dueDate"
               name="dueDate" id="dueDate">
           </div>
           <div class="row" *ngIf="isLoaderVisible" [style.marginBottom.px]="-20">
             <h5 class="text-center">Please, wait...</h5>
           </div>
-          <div class="row" *ngIf="!isLoaderVisible">
+          <div class="row" *ngIf="isTaskDeleted">
             <h3 class="text-center">{{_taskService.taskDeletionMsg}}</h3>
           </div>
         </bs-modal-body>
         <bs-modal-footer>
-          <button [style.visibility]="!isTaskVisible ? 'visible' : 'hidden'" type="button" class="btn btn-default" (click)="taskDeletionModal.open(model2)">Delete</button>
-          <button [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'" type="button" class="btn btn-warning" (click)="editTask()">Edit</button>
+          <button *ngIf="!isTaskDeleted" [style.visibility]="!isTaskVisible ? 'visible' : 'hidden'" type="button" class="btn btn-default"
+            (click)="taskDeletionModal.open(model2)">Delete</button>
+          <button *ngIf="!isTaskDeleted" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'" type="button" class="btn btn-warning"
+            (click)="editTask()">Edit</button>
           <button *ngIf="isTaskEditable" type="button" class="btn btn-success" data-dismiss="modal" (click)="taskDetailsModal.dismiss()">Save</button>
           <button type="button" class="btn btn-default" (click)="taskDetailsModal.close()">Close</button>
         </bs-modal-footer>

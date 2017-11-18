@@ -7,8 +7,8 @@ import { RouterModule } from '@angular/router';
 import { ROUTES } from './routes';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { DndModule } from 'ng2-dnd';
 import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AuthService } from './auth.service';
@@ -42,13 +42,13 @@ import { CustomToastOptions } from './toast.options';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    DndModule.forRoot(),
     ToastModule.forRoot(),
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot(ROUTES),
     DragulaModule,
-    BsModalModule
+    BsModalModule,
+    BsDatepickerModule.forRoot()
   ],
   providers: [
     AuthService,

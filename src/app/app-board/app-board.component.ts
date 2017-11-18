@@ -31,6 +31,7 @@ export class AppBoardComponent implements OnInit, OnDestroy {
   isModalSignUpVisible = false;
   isTaskEditable = false;
   isLoaderVisible = false;
+  isTaskDeleted = false;
 
   @ViewChild('taskDetailsModal') modal1: BsModalComponent;
   @ViewChild('taskDeletionModal') modal2: BsModalComponent;
@@ -217,6 +218,11 @@ export class AppBoardComponent implements OnInit, OnDestroy {
           {},
           this._boardService.board.groups[groupIndex].tasks[taskIndex]
         );
+        this._taskService.taskDetails.dueDate = new Date(
+          this._taskService.taskDetails.dueDate
+        );
+        this._taskService.origGroupIndexForTaskDetails = groupIndex;
+        this._taskService.origTaskIndexForTaskDetails = taskIndex;
 
         if (!this.isModalSignInVisible && this.isModalSignUpVisible) {
           this.toggleAuthFormsVisible();
@@ -248,10 +254,22 @@ export class AppBoardComponent implements OnInit, OnDestroy {
       .toPromise()
       .then(
         res => {
-          console.log(res);
           this.isLoaderVisible = false;
+
+          this._boardService.board.groups[
+            this._taskService.origGroupIndexForTaskDetails
+          ].tasks.splice(this._taskService.origTaskIndexForTaskDetails, 1);
+
+          this.isTaskDeleted = true;
           this._taskService.taskDeletionMsg = res['message'];
+
+          return setTimeout(() => {
+            this.modal1.close();
+            this.isTaskDeleted = false;
+            this._taskService.taskDeletionMsg = '';
+          }, 3000);
         },
+
         err => console.log(err)
       );
   }

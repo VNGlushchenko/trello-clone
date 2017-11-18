@@ -18,6 +18,11 @@ export class TaskService {
     order: 0
   };
 
+  origGroupIndexForTaskDetails = -1;
+  origTaskIndexForTaskDetails = -1;
+
+  testDate: Date;
+
   taskDeletionMsg = '';
 
   constructor(private _http: HttpClient) {}
