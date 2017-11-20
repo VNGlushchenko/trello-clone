@@ -1,5 +1,6 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   OnInit,
   OnDestroy,
@@ -11,6 +12,9 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { DragulaService } from 'ng2-dragula/components/dragula.provider';
 import { BsModalComponent, BsModalService } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import { defineLocale } from 'ngx-bootstrap/bs-moment';
+import { enGb } from 'ngx-bootstrap/locale';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { BoardService } from './board.service';
 import { TaskService } from '../app-task/task.service';
@@ -32,7 +36,7 @@ export class AppBoardComponent implements OnInit, OnDestroy {
   isTaskEditable = false;
   isLoaderVisible = false;
   isTaskDeleted = false;
-
+  datepickerOptions: BsDatepickerConfig;
   @ViewChild('taskDetailsModal') modal1: BsModalComponent;
   @ViewChild('taskDeletionModal') modal2: BsModalComponent;
 
@@ -44,7 +48,8 @@ export class AppBoardComponent implements OnInit, OnDestroy {
     private _authService: AuthService,
     private _router: Router,
     private _toastr: ToastsManager,
-    private _vcr: ViewContainerRef
+    private _vcr: ViewContainerRef,
+    public el: ElementRef
   ) {
     this._dropModelObservable = _dragulaService.dropModel;
     this._subscription = this._dropModelObservable.subscribe(value => {
@@ -52,6 +57,10 @@ export class AppBoardComponent implements OnInit, OnDestroy {
     });
 
     this._toastr.setRootViewContainerRef(_vcr);
+
+    defineLocale(enGb.abbr, enGb);
+    this.datepickerOptions = new BsDatepickerConfig();
+    this.datepickerOptions.locale = enGb.abbr;
   }
 
   ngOnInit() {
@@ -244,6 +253,13 @@ export class AppBoardComponent implements OnInit, OnDestroy {
 
   editTask() {
     this.isTaskEditable = true;
+    /* console.dir(this.el.nativeElement);
+    console.dir(document.getElementById('dueDate'));
+    document.getElementById('dueDate').attributes[10] = null;
+    const arr = Array.from(document.getElementById('dueDate').attributes);
+    arr.splice(10, 1);
+    console.dir(document.getElementById('dueDate').attributes[10]);
+    console.dir(document.getElementById('dueDate').attributes); */
   }
 
   runTaskDeletion() {
@@ -268,6 +284,36 @@ export class AppBoardComponent implements OnInit, OnDestroy {
             this.isTaskDeleted = false;
             this._taskService.taskDeletionMsg = '';
           }, 3000);
+        },
+
+        err => console.log(err)
+      );
+  }
+
+  runTaskUpdating() {
+    this.isLoaderVisible = true;
+    console.dir(this._taskService.taskDetails);
+    this._taskService
+      .updateTask(this._taskService.taskDetails)
+      .toPromise()
+      .then(
+        res => {
+          this.isLoaderVisible = false;
+
+          /* this._boardService.board.groups[
+          this._taskService.origGroupIndexForTaskDetails
+        ].tasks.splice(this._taskService.origTaskIndexForTaskDetails, 1);
+
+        this.isTaskDeleted = true;
+        this._taskService.taskDeletionMsg = res['message'];
+
+        return setTimeout(() => {
+          this.modal1.close();
+          this.isTaskDeleted = false;
+          this._taskService.taskDeletionMsg = '';
+        }, 3000); */ console.log(
+            res
+          );
         },
 
         err => console.log(err)

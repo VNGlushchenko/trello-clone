@@ -20,3 +20,8 @@
         transform: rotate(360deg);
     }
 }
+
+
+/* .bs-datepicker {
+    z-index: 9999999 !important;
+} */

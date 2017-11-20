@@ -18,6 +18,8 @@ export class TaskService {
     order: 0
   };
 
+  dueDateForInputDate: string;
+
   origGroupIndexForTaskDetails = -1;
   origTaskIndexForTaskDetails = -1;
 
@@ -29,6 +31,10 @@ export class TaskService {
 
   public updateTasksList(list: Task[]): Observable<Object> {
     return this._http.put(`${this._apiUrl}/tasks`, { data: list });
+  }
+
+  public updateTask(taskData: Task): Observable<Object> {
+    return this._http.put(`${this._apiUrl}/task`, { data: taskData });
   }
 
   public deleteTask(id: string): Observable<Object> {

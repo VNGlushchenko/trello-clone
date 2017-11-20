@@ -16,10 +16,10 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
-        "styles.css",
         "../node_modules/bootstrap/dist/css/bootstrap.min.css",
         "../node_modules/ng2-toastr/bundles/ng2-toastr.min.css",
-        "../node_modules/ngx-bootstrap/datepicker/bs-datepicker.css"
+        "../node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
+        "styles.css"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",

@@ -43,26 +43,32 @@ module.exports = function(app, strategy) {
   });
 
   // Update
-  app.put('/task/:id', strategy, function(req, res) {
-    Task.findById(req.params.id, function(err, task) {
+  app.put('/task', strategy, function(req, res) {
+    console.log(req.body.data);
+    Task.findById(req.body.data._id, function(err, task) {
       if (err)
         res.json({
           error: err
         });
       if (task) {
         _.merge(task, req.body);
-        task.save(function(err) {
+
+        task.save(function(err, task) {
           if (err)
             res.json({
               error: err
             });
-          res.json({
-            message: 'Task was updated successfully'
-          });
-        });
-      } else {
-        res.json({
-          message: 'Task is not found'
+
+          if (task) {
+            res.json({
+              message: 'Task was updated successfully',
+              updTask: task
+            });
+          } else {
+            res.json({
+              message: 'Task is not found'
+            });
+          }
         });
       }
     });
