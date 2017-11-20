@@ -38,6 +38,7 @@ export class AppBoardComponent implements OnInit, OnDestroy {
   isTaskDeleted = false;
   isTaskUpdated = false;
   datepickerOptions: BsDatepickerConfig;
+
   @ViewChild('taskDetailsModal') modal1: BsModalComponent;
   @ViewChild('taskDeletionModal') modal2: BsModalComponent;
 
@@ -72,7 +73,6 @@ export class AppBoardComponent implements OnInit, OnDestroy {
           this._boardService.board._id = data[0]['_id'];
           this._boardService.board.title = data[0]['title'];
           this._boardService.board.groups = <Group[]>data[1];
-
           this._boardService.tasks = <Task[]>data[2];
 
           this._boardService.distributeTasksOnGroups(

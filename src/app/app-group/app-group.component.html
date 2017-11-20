@@ -8,12 +8,11 @@
         </app-task>
       </div>
       <div class="well">
-        <form>
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="Add a task..." (focus)="checkUserCredentials()">
-          </div>
-          <button type="button" class="btn btn-default">Save</button>
-        </form>
+        <div class="form-group">
+          <input [attr.data-group-id]="group._id" required type="text" [(ngModel)]="newTaskModel.title" class="form-control" placeholder="Add a task..."
+            (focus)="checkUserCredentials()">
+        </div>
+        <button type="button" class="btn btn-default" [disabled]="!newTaskModel.title" (click)="runTaskCreation(newTaskModel)">Save</button>
       </div>
     </div>
   </div>

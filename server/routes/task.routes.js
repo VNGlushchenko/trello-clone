@@ -5,13 +5,15 @@ var Task = require('../models/task');
 module.exports = function(app, strategy) {
   // Create
   app.post('/task', strategy, function(req, res) {
-    var newTask = new Card(req.body);
+    var newTask = new Task(req.body.data);
     newTask.save(function(err, task) {
-      if (err)
+      if (err) {
         res.json({
           error: err
         });
-      res.json(task);
+      } else {
+        res.json({ message: 'Task was created successfully', task: task });
+      }
     });
   });
 
@@ -95,7 +97,6 @@ module.exports = function(app, strategy) {
                   error: err
                 });
 
-              console.log('Updated', task);
               callback();
             });
           }
