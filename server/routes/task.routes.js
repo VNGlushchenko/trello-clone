@@ -45,33 +45,34 @@ module.exports = function(app, strategy) {
   // Update
   app.put('/task', strategy, function(req, res) {
     console.log(req.body.data);
-    Task.findById(req.body.data._id, function(err, task) {
-      if (err)
-        res.json({
-          error: err
-        });
-      if (task) {
-        _.merge(task, req.body);
+    Task.findByIdAndUpdate(
+      req.body.data._id,
+      {
+        $set: {
+          title: req.body.data.title,
+          description: req.body.data.description,
+          dueDate: req.body.data.dueDate
+        }
+      },
+      { new: true },
+      function(err, task) {
+        if (err)
+          res.json({
+            error: err
+          });
 
-        task.save(function(err, task) {
-          if (err)
-            res.json({
-              error: err
-            });
-
-          if (task) {
-            res.json({
-              message: 'Task was updated successfully',
-              updTask: task
-            });
-          } else {
-            res.json({
-              message: 'Task is not found'
-            });
-          }
-        });
+        if (task) {
+          res.json({
+            message: 'Task was updated successfully',
+            updTask: task
+          });
+        } else {
+          res.json({
+            message: 'Task is not found'
+          });
+        }
       }
-    });
+    );
   });
 
   app.put('/tasks', strategy, function(req, res) {

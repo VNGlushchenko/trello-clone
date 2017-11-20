@@ -36,6 +36,7 @@ export class AppBoardComponent implements OnInit, OnDestroy {
   isTaskEditable = false;
   isLoaderVisible = false;
   isTaskDeleted = false;
+  isTaskUpdated = false;
   datepickerOptions: BsDatepickerConfig;
   @ViewChild('taskDetailsModal') modal1: BsModalComponent;
   @ViewChild('taskDeletionModal') modal2: BsModalComponent;
@@ -292,7 +293,6 @@ export class AppBoardComponent implements OnInit, OnDestroy {
 
   runTaskUpdating() {
     this.isLoaderVisible = true;
-    console.dir(this._taskService.taskDetails);
     this._taskService
       .updateTask(this._taskService.taskDetails)
       .toPromise()
@@ -300,20 +300,20 @@ export class AppBoardComponent implements OnInit, OnDestroy {
         res => {
           this.isLoaderVisible = false;
 
-          /* this._boardService.board.groups[
-          this._taskService.origGroupIndexForTaskDetails
-        ].tasks.splice(this._taskService.origTaskIndexForTaskDetails, 1);
+          this._boardService.board.groups[
+            this._taskService.origGroupIndexForTaskDetails
+          ].tasks[this._taskService.origTaskIndexForTaskDetails] =
+            res['updTask'];
 
-        this.isTaskDeleted = true;
-        this._taskService.taskDeletionMsg = res['message'];
+          this.isTaskUpdated = true;
+          this._taskService.taskUpdatingMsg = res['message'];
 
-        return setTimeout(() => {
-          this.modal1.close();
-          this.isTaskDeleted = false;
-          this._taskService.taskDeletionMsg = '';
-        }, 3000); */ console.log(
-            res
-          );
+          return setTimeout(() => {
+            this.modal1.close();
+            this.isTaskUpdated = false;
+            this.isTaskEditable = false;
+            this._taskService.taskUpdatingMsg = '';
+          }, 3000);
         },
 
         err => console.log(err)

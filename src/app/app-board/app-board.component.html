@@ -55,8 +55,11 @@
           <div class="row" *ngIf="isLoaderVisible" [style.marginBottom.px]="-20">
             <h5 class="text-center">Please, wait...</h5>
           </div>
-          <div class="row" *ngIf="isTaskDeleted">
+          <div class="row" *ngIf="isTaskDeleted" [style.marginBottom.px]="-20">
             <h3 class="text-center">{{_taskService.taskDeletionMsg}}</h3>
+          </div>
+          <div class="row" *ngIf="isTaskUpdated">
+            <h3 class="text-center text-success">{{_taskService.taskUpdatingMsg}}</h3>
           </div>
         </bs-modal-body>
         <bs-modal-footer>
