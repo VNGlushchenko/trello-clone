@@ -1,8 +1,6 @@
 .loader {
     border: 6px solid #f3f3f3;
-    /* Light grey */
     border-top: 6px solid #3498db;
-    /* Blue */
     border-radius: 50%;
     width: 60px;
     height: 60px;
@@ -21,7 +19,15 @@
     }
 }
 
+.container-fluid>.row {
+    overflow-x: auto;
+    white-space: nowrap;
+}
 
-/* .bs-datepicker {
-    z-index: 9999999 !important;
-} */
+.container-fluid>.row>.col-sm-3,
+.container-fluid>.row>.col-md-3,
+.container-fluid>.row>.col-lg-3 {
+    display: inline-block;
+    float: none;
+    vertical-align: top;
+}

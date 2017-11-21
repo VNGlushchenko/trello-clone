@@ -1,11 +1,34 @@
 <div class="col-sm-3">
   <div class="panel panel-info">
-    <div class="panel-heading">{{group.title}}</div>
+    <div class="panel-heading">
+      <span *ngIf="!(_groupService.isGroupEditable && group._id ===_groupService.currentEditableGroupId)">{{group.title}}</span>
+      <span *ngIf="!(_groupService.isGroupEditable && group._id ===_groupService.currentEditableGroupId)" class="glyphicon glyphicon-pencil"
+        aria-hidden="true" (click)="checkUserCredentials(group._id)"></span>
+      <div class="row" *ngIf="_groupService.isGroupEditable && group._id ===_groupService.currentEditableGroupId">
+        <div class="col-xs-12">
+          <input type="text" class="form-control" [(ngModel)]="newGroupName">
+        </div>
+        <div class="col-xs-12" [style.margin-top.px]="10">
+          <div class="btn-group btn-group-justified" role="group" aria-label="...">
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-default" (click)="emitGroupDeletion()">Delete</button>
+            </div>
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-success" [disabled]="!newGroupName" (click)="runGroupUpdating(group._id, newGroupName)">Save</button>
+            </div>
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-default" (click)="_groupService.exitFromGroupEditing()">Exit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="panel-body">
       <div [dragula]="'bag-one'" [dragulaModel]='group.tasks' [attr.data-dragula-group-id]="group._id">
         <app-task *ngFor="let task of group.tasks;let i = index;" [attr.data-task-id]="task._id" [attr.data-task-order]="task.order"
           [attr.data-task-group-id]="task.groupId" [attr.data-task-board-id]="task.boardId" [task]="task">
         </app-task>
+        <div class="clearfix visible-lg-block"></div>
       </div>
       <div class="well">
         <div class="form-group">

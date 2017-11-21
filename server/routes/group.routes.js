@@ -8,7 +8,7 @@ module.exports = function(app, strategy) {
     var newGroup = new Group(req.body);
     newGroup.save(function(err, group) {
       if (err) res.json({ error: err });
-      res.json(group);
+      res.json({ message: 'Group was created successfully', group: group });
     });
   });
 
@@ -48,16 +48,21 @@ module.exports = function(app, strategy) {
   });
 
   /* Update */
-  app.put('/group/:id', strategy, function(req, res) {
-    Group.findById(req.params.id, function(err, group) {
+  app.put('/group', strategy, function(req, res) {
+    Group.findById(req.body._id, function(err, group) {
       if (err) res.json({ error: err });
+
       if (group) {
         _.merge(group, req.body);
-        column.save(function(err) {
+        group.save(function(err) {
           if (err) {
             res.json({ error: err });
+          } else {
+            res.json({
+              message: 'Group was updated successfully',
+              group: group
+            });
           }
-          res.json({ message: 'Group was updated successfully' });
         });
       } else {
         res.json({ message: 'Group are not found' });
@@ -67,11 +72,21 @@ module.exports = function(app, strategy) {
 
   // Delete
   app.delete('/group/:id', strategy, function(req, res) {
-    Group.findByIdAndRemove(req.params.id, function(err) {
-      if (err) {
-        res.json({ error: err });
+    Task.remove({ groupId: req.params.id }, function(err, result) {
+      if (err) res.json({ error: err });
+      if (result) {
+        console.log(result);
+
+        Group.findByIdAndRemove(req.params.id, function(err) {
+          if (err) {
+            res.json({ error: err });
+          } else {
+            res.json({
+              message: 'Group with all its tasks were deleted successfully'
+            });
+          }
+        });
       }
-      res.json({ message: 'Group was deletes successfully' });
     });
   });
 };

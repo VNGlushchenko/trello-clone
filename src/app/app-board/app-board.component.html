@@ -1,16 +1,14 @@
 <div class="container-fluid">
   <div class="row" (click)="getTaskDetailsForModal($event)" id="board">
     <app-group *ngFor="let group of _boardService.board.groups" [attr.data-group-board-id]="group.boardId" [attr.data-group-id]="group._id"
-      [attr.data-group-order]="group.order" [group]="group"></app-group>
+      [attr.data-group-order]="group.order" [group]="group" (deleteGroup)="confirmGroupDeletion($event)"></app-group>
     <div class="col-sm-3">
       <div class="panel panel-default">
         <div class="panel-body">
-          <form>
-            <div class="form-group">
-              <input type="text" class="form-control" placeholder="Add a group..." (focus)="checkUserCredentials()">
-            </div>
-            <button type="button" class="btn btn-default">Save</button>
-          </form>
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Add a group..." (focus)="checkUserCredentials()" [(ngModel)]="_groupService.newGroupName">
+          </div>
+          <button type="button" class="btn btn-default" [disabled]="!_groupService.newGroupName" (click)="runGroupCreation(_groupService.newGroupName, _boardService.board._id, _boardService.board.groups.length+1)">Save</button>
         </div>
       </div>
     </div>
@@ -53,10 +51,10 @@
             <!-- <input  [isDisabled]="!isTaskEditable" type="date" class="form-control" [(ngModel)]="_taskService.taskDetails.dueDate" name="dueDate" id="dueDate"> -->
           </div>
           <div class="row" *ngIf="isLoaderVisible" [style.marginBottom.px]="-20">
-            <h5 class="text-center">Please, wait...</h5>
+            <h3 class="text-center text-info">Please, wait...</h3>
           </div>
-          <div class="row" *ngIf="isTaskDeleted" [style.marginBottom.px]="-20">
-            <h3 class="text-center">{{_taskService.taskDeletionMsg}}</h3>
+          <div class="row" *ngIf="isTaskDeleted" [style.marginBottom.px]="0">
+            <h3 class="text-center text-success">{{_taskService.taskDeletionMsg}}</h3>
           </div>
           <div class="row" *ngIf="isTaskUpdated">
             <h3 class="text-center text-success">{{_taskService.taskUpdatingMsg}}</h3>
@@ -64,7 +62,7 @@
         </bs-modal-body>
         <bs-modal-footer>
           <button *ngIf="!isTaskDeleted" [style.visibility]="!isTaskVisible ? 'visible' : 'hidden'" type="button" class="btn btn-default"
-            (click)="taskDeletionModal.open(model2)">Delete</button>
+            (click)="taskDeletionModal.open(modal2)">Delete</button>
           <button *ngIf="!isTaskDeleted" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'" type="button" class="btn btn-warning"
             (click)="editTask()">Edit</button>
           <button *ngIf="isTaskEditable" type="button" class="btn btn-success" (click)="runTaskUpdating()">Save</button>
@@ -85,6 +83,31 @@
       <bs-modal-footer>
         <button type="button" class="btn btn-default" (click)="runTaskDeletion()">Yes</button>
         <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="taskDeletionModal.dismiss()">Cancel</button>
+      </bs-modal-footer>
+    </bs-modal>
+
+    <bs-modal #groupDeletionModal>
+      <bs-modal-header [showDismiss]="true">
+        <h4 class="modal-title">Confirmation of deletion</h4>
+      </bs-modal-header>
+      <bs-modal-body>
+        <div class="loader" *ngIf="isLoaderVisible"></div>
+        <div *ngIf="isConfirmationShown" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'">
+          <h4>Do you confirm deletion of this group
+            <strong class="text-danger">with all its tasks?</strong>
+          </h4>
+          <h3 class="text-danger">WARNING: If you confirm this action, tasks of this group are deleted as well and cannot be recovered!</h3>
+        </div>
+        <div class="row" *ngIf="isLoaderVisible">
+          <h3 class="text-center text-info">Please, wait...</h3>
+        </div>
+        <div class="row" *ngIf="isGroupDeleted">
+          <h3 class="text-center text-success">{{_groupService.groupDeletionMsg}}</h3>
+        </div>
+      </bs-modal-body>
+      <bs-modal-footer>
+        <button type="button" class="btn btn-default" (click)="runGroupDeletion(_groupService.groupIdForDeletion)">Yes</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="groupDeletionModal.dismiss()">Cancel</button>
       </bs-modal-footer>
     </bs-modal>
 

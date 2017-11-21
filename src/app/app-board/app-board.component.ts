@@ -22,6 +22,7 @@ import { AuthService } from '../auth.service';
 import { Board } from './board';
 import { Group } from '../app-group/group';
 import { Task } from '../app-task/task';
+import { GroupService } from '../app-group/group.service';
 
 @Component({
   selector: 'app-board',
@@ -37,15 +38,19 @@ export class AppBoardComponent implements OnInit, OnDestroy {
   isLoaderVisible = false;
   isTaskDeleted = false;
   isTaskUpdated = false;
+  isGroupDeleted = false;
+  isConfirmationShown = true;
   datepickerOptions: BsDatepickerConfig;
 
   @ViewChild('taskDetailsModal') modal1: BsModalComponent;
   @ViewChild('taskDeletionModal') modal2: BsModalComponent;
+  @ViewChild('groupDeletionModal') modal3: BsModalComponent;
 
   constructor(
     private _dragulaService: DragulaService,
     private _bsModalService: BsModalService,
     private _boardService: BoardService,
+    private _groupService: GroupService,
     private _taskService: TaskService,
     private _authService: AuthService,
     private _router: Router,
@@ -97,6 +102,9 @@ export class AppBoardComponent implements OnInit, OnDestroy {
     this._toastr.error(msg, 'Oops!', { toastLife: 3000 });
   }
 
+  showSuccessMsg(msg: string): void {
+    this._toastr.success(msg, 'Success!', { toastLife: 3000 });
+  }
   // --------------------------------------------------------------------------
   // It processes drag and drop of tasks inside groups and between ones -- BEGIN
   private _onDropModel(args: EventEmitter<any>): void {
@@ -316,6 +324,71 @@ export class AppBoardComponent implements OnInit, OnDestroy {
           }, 3000);
         },
 
+        err => console.log(err)
+      );
+  }
+
+  confirmGroupDeletion(groupId) {
+    this._groupService.groupIdForDeletion = groupId;
+    this.modal3.open();
+  }
+
+  runGroupDeletion(groupId) {
+    this.isLoaderVisible = true;
+
+    this._groupService
+      .deleteGroup(groupId)
+      .toPromise()
+      .then(
+        res => {
+          this.isLoaderVisible = false;
+          this.isConfirmationShown = false;
+          this._groupService.groupDeletionMsg = res['message'];
+          this.isGroupDeleted = true;
+
+          let idx = -1;
+          if (
+            this._boardService.board.groups.some(
+              (elem, index, arr): boolean => {
+                idx = index;
+                if (elem._id === this._groupService.groupIdForDeletion) {
+                  return true;
+                }
+              }
+            )
+          ) {
+            this._boardService.board.groups.splice(idx, 1);
+            this._groupService.groupIdForDeletion = '';
+            this._groupService.exitFromGroupEditing();
+          }
+
+          return setTimeout(() => {
+            this.modal3.close();
+            this.isGroupDeleted = false;
+            this.isConfirmationShown = true;
+          }, 3000);
+        },
+        err => console.log(err)
+      );
+  }
+
+  public runGroupCreation(
+    newTitle: string,
+    groupBoardId: string,
+    orderGroup: number
+  ) {
+    this._groupService
+      .createGroup(newTitle, groupBoardId, orderGroup)
+      .toPromise()
+      .then(
+        res => {
+          this._boardService.board.groups.push(res['group']);
+          this._boardService.board.groups[
+            this._boardService.board.groups.length - 1
+          ]['tasks'] = new Array<Task>();
+          this._groupService.newGroupName = '';
+          this.showSuccessMsg(res['message']);
+        },
         err => console.log(err)
       );
   }

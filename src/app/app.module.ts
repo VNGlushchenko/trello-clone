@@ -26,6 +26,7 @@ import { AppTaskComponent } from './app-task/app-task.component';
 import { AppGroupComponent } from './app-group/app-group.component';
 import { AppBoardComponent } from './app-board/app-board.component';
 import { CustomToastOptions } from './toast.options';
+import { GroupService } from './app-group/group.service';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { CustomToastOptions } from './toast.options';
   providers: [
     AuthService,
     BoardService,
+    GroupService,
     TaskService,
     BsModalService,
     {
