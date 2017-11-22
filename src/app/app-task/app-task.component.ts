@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { Task } from './task';
 
 @Component({
