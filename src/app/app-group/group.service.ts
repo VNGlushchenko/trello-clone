@@ -15,17 +15,6 @@ export class GroupService {
 
   constructor(private _http: HttpClient) {}
 
-  public updateGroup(id: string, newTitle: string): Observable<Object> {
-    return this._http.put(`${this._apiUrl}/group`, {
-      _id: id,
-      title: newTitle
-    });
-  }
-
-  public deleteGroup(id: string): Observable<Object> {
-    return this._http.delete(`${this._apiUrl}/group/${id}`);
-  }
-
   public createGroup(
     title: string,
     groupBoardId: string,
@@ -38,7 +27,18 @@ export class GroupService {
     });
   }
 
-  exitFromGroupEditing() {
+  public updateGroup(id: string, newTitle: string): Observable<Object> {
+    return this._http.put(`${this._apiUrl}/group`, {
+      _id: id,
+      title: newTitle
+    });
+  }
+
+  public deleteGroup(id: string): Observable<Object> {
+    return this._http.delete(`${this._apiUrl}/group/${id}`);
+  }
+
+  public exitFromGroupEditing() {
     this.isGroupEditable = false;
     this.currentEditableGroupId = '';
   }

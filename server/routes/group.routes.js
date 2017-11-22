@@ -7,56 +7,32 @@ module.exports = function(app, strategy) {
   app.post('/group', strategy, function(req, res) {
     var newGroup = new Group(req.body);
     newGroup.save(function(err, group) {
-      if (err) res.json({ error: err });
-      res.json({ message: 'Group was created successfully', group: group });
+      if (err)
+        res.json({
+          error: err
+        });
+      res.json({
+        message: 'Group was created successfully',
+        group: group
+      });
     });
   });
 
-  // Read
-  app.get('/group', function(req, res) {
-    Group.find(function(err, groups) {
-      if (err) res.json({ error: err });
-      res.json(groups);
-    });
-  });
-
-  app.get('/group/:id', function(req, res) {
-    Group.findById(req.params.id, function(err, group) {
-      if (err) res.json({ error: err });
-      if (group) {
-        res.json(group);
-      } else {
-        res.json({ message: 'Group are not found' });
-      }
-    });
-  });
-
-  app.get('/group/:id/tasks', function(req, res) {
-    Group.findById(req.params.id, function(err, group) {
-      if (err) res.json({ error: err });
-      if (group) {
-        Task.find({ groupId: req.params.id })
-          .sort({ order: 1 })
-          .exec(function(err, tasks) {
-            if (err) throw err;
-            res.json(tasks);
-          });
-      } else {
-        res.json({ message: 'Group are not found' });
-      }
-    });
-  });
-
-  /* Update */
+  // Update
   app.put('/group', strategy, function(req, res) {
     Group.findById(req.body._id, function(err, group) {
-      if (err) res.json({ error: err });
+      if (err)
+        res.json({
+          error: err
+        });
 
       if (group) {
         _.merge(group, req.body);
         group.save(function(err) {
           if (err) {
-            res.json({ error: err });
+            res.json({
+              error: err
+            });
           } else {
             res.json({
               message: 'Group was updated successfully',
@@ -65,28 +41,40 @@ module.exports = function(app, strategy) {
           }
         });
       } else {
-        res.json({ message: 'Group are not found' });
+        res.json({
+          message: 'Group are not found'
+        });
       }
     });
   });
 
   // Delete
   app.delete('/group/:id', strategy, function(req, res) {
-    Task.remove({ groupId: req.params.id }, function(err, result) {
-      if (err) res.json({ error: err });
-      if (result) {
-        console.log(result);
-
-        Group.findByIdAndRemove(req.params.id, function(err) {
-          if (err) {
-            res.json({ error: err });
-          } else {
-            res.json({
-              message: 'Group with all its tasks were deleted successfully'
-            });
-          }
-        });
+    // First, the tasks of this group are deleted
+    Task.remove(
+      {
+        groupId: req.params.id
+      },
+      function(err, result) {
+        if (err)
+          res.json({
+            error: err
+          });
+        // Second, group is deleted
+        if (result) {
+          Group.findByIdAndRemove(req.params.id, function(err) {
+            if (err) {
+              res.json({
+                error: err
+              });
+            } else {
+              res.json({
+                message: 'Group with all its tasks were deleted successfully'
+              });
+            }
+          });
+        }
       }
-    });
+    );
   });
 };

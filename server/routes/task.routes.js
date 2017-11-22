@@ -17,36 +17,8 @@ module.exports = function(app, strategy) {
     });
   });
 
-  // Read
-  app.get('/task', function(req, res) {
-    Task.find(function(err, tasks) {
-      if (err)
-        res.json({
-          error: err
-        });
-      res.json(tasks);
-    });
-  });
-
-  app.get('/task/:id', function(req, res) {
-    Task.findById(req.params.id, function(err, task) {
-      if (err)
-        res.json({
-          error: err
-        });
-      if (task) {
-        res.json(task);
-      } else {
-        res.json({
-          message: 'Task is not found'
-        });
-      }
-    });
-  });
-
-  // Update
+  // Update one task
   app.put('/task', strategy, function(req, res) {
-    console.log(req.body.data);
     Task.findByIdAndUpdate(
       req.body.data._id,
       {
@@ -77,11 +49,12 @@ module.exports = function(app, strategy) {
     );
   });
 
+  // Update many tasks
   app.put('/tasks', strategy, function(req, res) {
-    var inputData = req.body.data;
+    var taskList = req.body.data;
 
     async.each(
-      inputData,
+      taskList,
       function(taskItem, callback) {
         Task.findById(taskItem._id, function(err, task) {
           if (err)
@@ -110,7 +83,7 @@ module.exports = function(app, strategy) {
         } else {
           res.json({
             message: 'Tasks were updated successfully',
-            inputData: inputData
+            inputData: taskList
           });
         }
       }

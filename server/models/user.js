@@ -5,7 +5,7 @@ var crypto = require('crypto');
 var userSchema = new Schema(
   {
     name: { type: String, required: true },
-    passwordHash: { type: String, required: true /* , select: false  */ },
+    passwordHash: { type: String, required: true },
     email: {
       type: String,
       required: 'Enter an e-mail',

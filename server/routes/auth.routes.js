@@ -1,13 +1,13 @@
 var express = require('express');
 var app = express();
-var User = require('../models/user');
+var config = require('../config');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var JwtStrategy = require('passport-jwt').Strategy;
 var ExtractJwt = require('passport-jwt').ExtractJwt;
 var jwt = require('jsonwebtoken');
-var config = require('../config');
 const jwtSecret = config.secret;
+var User = require('../models/user');
 
 module.exports = function(app, api) {
   app.use(passport.initialize());
@@ -29,6 +29,7 @@ module.exports = function(app, api) {
         passwordField: 'password',
         session: false
       },
+
       function(username, password, done) {
         User.findOne({ email: username }, function(err, user) {
           if (err) {
@@ -56,6 +57,7 @@ module.exports = function(app, api) {
         if (err) {
           return done(err);
         }
+
         if (user) {
           done(null, user);
         } else {
@@ -69,27 +71,27 @@ module.exports = function(app, api) {
 
   api.post('/signup', function(req, res) {
     // signUp form fields validation - BEGIN
-    var signUpErrorMasseges = {};
+    var signUpErrorMessages = {};
 
     if (!req.body.userName.trim()) {
-      signUpErrorMasseges.userName = 'User name is empty';
+      signUpErrorMessages.userName = 'User name is empty';
     }
 
     if (!!!req.body.email.match(/^.+@.+\..+$/gim)) {
-      signUpErrorMasseges.email = 'Email is incorrect';
+      signUpErrorMessages.email = 'Email is incorrect';
     }
 
     if (!req.body.password) {
-      signUpErrorMasseges.password = 'Password is empty';
+      signUpErrorMessages.password = 'Password is empty';
     }
 
     if (req.body.password && req.body.password.length < 8) {
-      signUpErrorMasseges.passwordLength =
+      signUpErrorMessages.passwordLength =
         'Password must contain 8 symbols at least';
     }
 
     if (!req.body.confirmedPassword) {
-      signUpErrorMasseges.confirmedPassword = 'Password is empty';
+      signUpErrorMessages.confirmedPassword = 'Password is empty';
     }
 
     if (
@@ -97,12 +99,12 @@ module.exports = function(app, api) {
       req.body.confirmedPassword &&
       req.body.password != req.body.confirmedPassword
     ) {
-      signUpErrorMasseges.passwordsChecking =
+      signUpErrorMessages.passwordsChecking =
         'Passwords do not match each other';
     }
 
-    if (Object.keys(signUpErrorMasseges).length) {
-      res.status(400).send(signUpErrorMasseges);
+    if (Object.keys(signUpErrorMessages).length) {
+      res.status(400).send(signUpErrorMessages);
     }
     // signUp form fields validation - END
 
@@ -130,8 +132,6 @@ module.exports = function(app, api) {
 
         newUser.save(function(err, user) {
           if (err) throw err;
-
-          console.log('User has been successfully saved');
 
           const payload = {
             client: user._id,

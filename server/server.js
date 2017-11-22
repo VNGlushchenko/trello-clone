@@ -30,15 +30,20 @@ app.get('/', function(req, res) {
 var apiRoutes = express.Router();
 
 var authRoutes = require('./routes/auth.routes')(app, apiRoutes);
-var taskRoutes = require('./routes/task.routes')(
-  apiRoutes,
-  passport.authenticate('jwt')
-);
+
+var boardRoutes = require('./routes/board.routes')(apiRoutes);
+
 var groupRoutes = require('./routes/group.routes')(
   apiRoutes,
   passport.authenticate('jwt')
 );
-var boardRoutes = require('./routes/board.routes')(apiRoutes);
+
+var taskRoutes = require('./routes/task.routes')(
+  apiRoutes,
+  passport.authenticate('jwt')
+);
+
+var createDbRoute = require('./routes/createdb.route')(apiRoutes);
 
 app.use('/api', apiRoutes);
 
