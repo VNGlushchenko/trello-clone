@@ -97,6 +97,11 @@ export class AppBoardComponent implements OnInit, OnDestroy {
     modal.open();
   }
 
+  closeTaskDetailsModal() {
+    this.isTaskEditable = false;
+    this.modal1.close();
+  }
+
   // It shows error massage
   showErrorMsg(msg: string): void {
     this._toastr.error(msg, 'Oops!', { toastLife: 3000 });

@@ -28,7 +28,7 @@
         <app-signup *ngIf="isModalSignUpVisible"></app-signup>
       </div>
 
-      <form #modalForm="ngForm" *ngIf="_authService.checkUserCredentials()">
+      <form #taskDetailsModalForm="ngForm" *ngIf="_authService.checkUserCredentials()">
         <bs-modal-header [showDismiss]="true">
           <h4 class="modal-title">Task details</h4>
         </bs-modal-header>
@@ -37,18 +37,17 @@
           <div class="form-group" *ngIf="!isTaskDeleted" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'">
             <label for="title">Title</label>
             <input [disabled]="!isTaskEditable" type="text" class="form-control" required [(ngModel)]="_taskService.taskDetails.title"
-              name="title" id="title">
+              name="title" id="title" #titleModel="ngModel">
           </div>
           <div class="form-group" *ngIf="!isTaskDeleted" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'">
             <label for="description">Description</label>
             <input [disabled]="!isTaskEditable" type="text" class="form-control" required [(ngModel)]="_taskService.taskDetails.description"
-              name="description" id="description">
+              name="description" id="description" #descriptionModel="ngModel">
           </div>
           <div class="form-group" *ngIf="!isTaskDeleted" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'">
             <label for="dueDate">dueDate</label>
             <input [isDisabled]="!isTaskEditable" type="text" class="form-control" bsDatepicker [bsConfig]="datepickerOptions" [(ngModel)]="_taskService.taskDetails.dueDate"
-              name="dueDate" id="dueDate">
-            <!-- <input  [isDisabled]="!isTaskEditable" type="date" class="form-control" [(ngModel)]="_taskService.taskDetails.dueDate" name="dueDate" id="dueDate"> -->
+              name="dueDate" id="dueDate" required #dueDateModel="ngModel" [ngStyle]="!isTaskEditable ? {'background-color': '#eee', 'border-left': '1px solid #ccc'} : {'background-color': '#fff'}">
           </div>
           <div class="row" *ngIf="isLoaderVisible" [style.marginBottom.px]="-20">
             <h3 class="text-center text-info">Please, wait...</h3>
@@ -65,8 +64,8 @@
             (click)="taskDeletionModal.open(modal2)">Delete</button>
           <button *ngIf="!isTaskDeleted" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'" type="button" class="btn btn-warning"
             (click)="editTask()">Edit</button>
-          <button *ngIf="isTaskEditable" type="button" class="btn btn-success" (click)="runTaskUpdating()">Save</button>
-          <button type="button" class="btn btn-default" (click)="taskDetailsModal.close()">Close</button>
+          <button *ngIf="isTaskEditable" [disabled]="!taskDetailsModalForm.form.valid" type="button" class="btn btn-success" (click)="runTaskUpdating()">Save</button>
+          <button type="button" class="btn btn-default" (click)="closeTaskDetailsModal()">Close</button>
         </bs-modal-footer>
       </form>
     </bs-modal>
@@ -106,8 +105,10 @@
         </div>
       </bs-modal-body>
       <bs-modal-footer>
-        <button *ngIf="!isGroupDeleted" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'" type="button" class="btn btn-default" (click)="runGroupDeletion(_groupService.groupIdForDeletion)">Yes</button>
-        <button *ngIf="!isGroupDeleted" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'" type="button" class="btn btn-primary" data-dismiss="modal" (click)="groupDeletionModal.dismiss()">Cancel</button>
+        <button *ngIf="!isGroupDeleted" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'" type="button" class="btn btn-default"
+          (click)="runGroupDeletion(_groupService.groupIdForDeletion)">Yes</button>
+        <button *ngIf="!isGroupDeleted" [style.visibility]="!isLoaderVisible ? 'visible' : 'hidden'" type="button" class="btn btn-primary"
+          data-dismiss="modal" (click)="groupDeletionModal.dismiss()">Cancel</button>
         <button type="button" class="btn btn-default" (click)="groupDeletionModal.close()">Close</button>
       </bs-modal-footer>
     </bs-modal>
