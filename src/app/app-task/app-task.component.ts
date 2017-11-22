@@ -10,17 +10,7 @@ import { Task } from './task';
 export class AppTaskComponent implements OnInit {
   @Input() task: Task;
 
-  changedTask = new Task();
-
   constructor() {}
 
-  ngOnInit() {
-    this.changedTask._id = this.task._id;
-    this.changedTask.title = this.task.title;
-    this.changedTask.description = this.task.description;
-    this.changedTask.dueDate = this.task.dueDate;
-    this.changedTask.boardId = this.task.boardId;
-    this.changedTask.groupId = this.task.groupId;
-    this.changedTask.order = this.task.order;
-  }
+  ngOnInit() {}
 }

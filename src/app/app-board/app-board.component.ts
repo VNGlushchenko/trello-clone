@@ -1,6 +1,5 @@
 import {
   Component,
-  ElementRef,
   EventEmitter,
   OnInit,
   OnDestroy,
@@ -55,12 +54,18 @@ export class AppBoardComponent implements OnInit, OnDestroy {
     private _authService: AuthService,
     private _router: Router,
     private _toastr: ToastsManager,
-    private _vcr: ViewContainerRef,
-    public el: ElementRef
+    private _vcr: ViewContainerRef
   ) {
     this._dropModelObservable = _dragulaService.dropModel;
     this._subscription = this._dropModelObservable.subscribe(value => {
       this._onDropModel(value);
+    });
+
+    this._dragulaService.setOptions('bag-one', {
+      revertOnSpill: true,
+      moves: function(el: any, container: any, handle: any): any {
+        return !(el.dataset.taskPlaceholder === 'placeholder');
+      }
     });
 
     this._toastr.setRootViewContainerRef(_vcr);
@@ -90,6 +95,7 @@ export class AppBoardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this._subscription.unsubscribe();
+    this._dragulaService.destroy('bag-one');
   }
 
   // It opens modal window
@@ -267,13 +273,6 @@ export class AppBoardComponent implements OnInit, OnDestroy {
 
   editTask() {
     this.isTaskEditable = true;
-    /* console.dir(this.el.nativeElement);
-    console.dir(document.getElementById('dueDate'));
-    document.getElementById('dueDate').attributes[10] = null;
-    const arr = Array.from(document.getElementById('dueDate').attributes);
-    arr.splice(10, 1);
-    console.dir(document.getElementById('dueDate').attributes[10]);
-    console.dir(document.getElementById('dueDate').attributes); */
   }
 
   runTaskDeletion() {

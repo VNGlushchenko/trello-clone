@@ -25,10 +25,12 @@
     </div>
     <div class="panel-body">
       <div [dragula]="'bag-one'" [dragulaModel]='group.tasks' [attr.data-dragula-group-id]="group._id">
+        <div class="well" *ngIf="!group.tasks.length" [attr.data-task-placeholder]="'placeholder'">
+          <strong>No tasks</strong>
+        </div>
         <app-task *ngFor="let task of group.tasks;let i = index;" [attr.data-task-id]="task._id" [attr.data-task-order]="task.order"
           [attr.data-task-group-id]="task.groupId" [attr.data-task-board-id]="task.boardId" [task]="task">
         </app-task>
-        <div class="clearfix visible-lg-block"></div>
       </div>
       <div class="well">
         <div class="form-group">
