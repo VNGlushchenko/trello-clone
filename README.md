@@ -1,6 +1,6 @@
 # TrelloClone
 
-This is a light trello-clone
+This is a light trello-clone.
 
 This project was generated with
 [Angular CLI](https://github.com/angular/angular-cli) version 1.4.7.
@@ -10,10 +10,10 @@ This project was generated with
 **To run this app MongoDB must be previously installed and run.**
 
 1. Clone this repository.
-2. In first terminal window go to folder of cloned project and run command **npm
-   install**.
-3. In second terminal window go to folder `{folder of cloned project}/server`
-   and run command **node server.js**.
+2. In first terminal window go to folder of cloned project (`trello-clone`) and
+   run command **npm install**.
+3. In second terminal window go to folder `trello-clone/server` and run command
+   **node server.js**.
 4. Create MongoDB database with help of opening link
    `http://localhost:3000/api/createdb` in browser. If database is successfully
    created you will see message `Board with groups of tasks was successfully
