@@ -1,7 +1,7 @@
-import { Task } from './task';
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
+import { Task } from './task';
 
 @Injectable()
 export class TaskService {
@@ -26,19 +26,19 @@ export class TaskService {
 
   constructor(private _http: HttpClient) {}
 
-  public updateTasksList(list: Task[]): Observable<Object> {
+  createTask(newTask: Task): Observable<Object> {
+    return this._http.post(`${this._apiUrl}/task`, { data: newTask });
+  }
+
+  updateTasksList(list: Task[]): Observable<Object> {
     return this._http.put(`${this._apiUrl}/tasks`, { data: list });
   }
 
-  public updateTask(taskData: Task): Observable<Object> {
+  updateTask(taskData: Task): Observable<Object> {
     return this._http.put(`${this._apiUrl}/task`, { data: taskData });
   }
 
-  public deleteTask(id: string): Observable<Object> {
+  deleteTask(id: string): Observable<Object> {
     return this._http.delete(`${this._apiUrl}/task/${id}`);
-  }
-
-  public createTask(newTask: Task): Observable<Object> {
-    return this._http.post(`${this._apiUrl}/task`, { data: newTask });
   }
 }

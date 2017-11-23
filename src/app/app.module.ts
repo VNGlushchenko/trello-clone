@@ -1,32 +1,35 @@
-import { BsModalModule, BsModalService } from 'ng2-bs3-modal/ng2-bs3-modal';
-import { DragulaModule } from 'ng2-dragula/components/dragular.module';
+// modules
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ROUTES } from './routes';
-import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
-import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-
+import { BsModalModule, BsModalService } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { DragulaModule } from 'ng2-dragula/components/dragular.module';
+import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
+// services
+import { AuthInterceptor } from './auth.interceptor';
 import { AuthService } from './auth.service';
 import { BoardService } from './app-board/board.service';
+import { GroupService } from './app-group/group.service';
 import { TaskService } from './app-task/task.service';
-
+// components and directives
 import { AppComponent } from './app.component';
 import { AppHeaderComponent } from './app-header/app.header.component';
 import { AppMainComponent } from './app-main/app.main.component';
-import { AppSignupComponent } from './app-signup/app.signup.component';
-import { CheckPasswordValidatorDirective } from './app-signup/check-password-validator.directive';
 import { AppSigninComponent } from './app-signin/app.signin.component';
-import { AuthInterceptor } from './auth.interceptor';
-import { AppTaskComponent } from './app-task/app-task.component';
-import { AppGroupComponent } from './app-group/app-group.component';
+import { AppSignupComponent } from './app-signup/app.signup.component';
 import { AppBoardComponent } from './app-board/app-board.component';
+import { AppGroupComponent } from './app-group/app-group.component';
+import { AppTaskComponent } from './app-task/app-task.component';
+import { CheckPasswordValidatorDirective } from './app-signup/check-password-validator.directive';
+// toast settings
 import { CustomToastOptions } from './toast.options';
-import { GroupService } from './app-group/group.service';
+// routes
+import { ROUTES } from './routes';
 
 @NgModule({
   declarations: [
@@ -43,25 +46,25 @@ import { GroupService } from './app-group/group.service';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    ToastModule.forRoot(),
-    HttpClientModule,
-    FormsModule,
-    RouterModule.forRoot(ROUTES),
-    DragulaModule,
     BsModalModule,
-    BsDatepickerModule.forRoot()
+    BsDatepickerModule.forRoot(),
+    DragulaModule,
+    FormsModule,
+    HttpClientModule,
+    RouterModule.forRoot(ROUTES),
+    ToastModule.forRoot()
   ],
   providers: [
     AuthService,
     BoardService,
-    GroupService,
-    TaskService,
     BsModalService,
+    GroupService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
     },
+    TaskService,
     { provide: ToastOptions, useClass: CustomToastOptions }
   ],
   bootstrap: [AppComponent]

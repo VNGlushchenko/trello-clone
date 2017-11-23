@@ -1,5 +1,8 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { SigninModel } from './app-signin/signin.model';
+import { SignupModel } from './app-signup/signup.model';
 import { UserCredentials } from './app-signin/user.credentials';
 
 @Injectable()
@@ -8,23 +11,16 @@ export class AuthService {
 
   constructor(private _http: HttpClient) {}
 
-  public signUp(userData) {
-    const headers = new HttpHeaders();
-    headers.append('Content-Type', 'application/json');
-
-    return this._http.post(
-      '/api/signup',
-      {
-        userName: userData.userName,
-        email: userData.email,
-        password: userData.password,
-        confirmedPassword: userData.confirmedPassword
-      },
-      { headers: headers }
-    );
+  checkUserCredentials(): boolean {
+    return !!this.userCredentials.user && !!this.userCredentials.token;
   }
 
-  public signIn(userData) {
+  logOut(): void {
+    this.userCredentials.user = '';
+    this.userCredentials.token = '';
+  }
+
+  signIn(userData: SigninModel): Observable<Object> {
     const headers = new HttpHeaders();
     headers.append('Content-Type', 'application/json');
 
@@ -40,16 +36,19 @@ export class AuthService {
     );
   }
 
-  public logOut() {
-    this.userCredentials.user = '';
-    this.userCredentials.token = '';
-  }
+  signUp(userData: SignupModel): Observable<Object> {
+    const headers = new HttpHeaders();
+    headers.append('Content-Type', 'application/json');
 
-  public testMongo() {
-    return this._http.get('/api/task');
-  }
-
-  public checkUserCredentials() {
-    return this.userCredentials.user && this.userCredentials.token;
+    return this._http.post(
+      '/api/signup',
+      {
+        userName: userData.userName,
+        email: userData.email,
+        password: userData.password,
+        confirmedPassword: userData.confirmedPassword
+      },
+      { headers: headers }
+    );
   }
 }

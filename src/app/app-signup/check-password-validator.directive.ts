@@ -25,7 +25,7 @@ export class CheckPasswordValidatorDirective implements Validator, OnChanges {
   private validationFunction = Validators.nullValidator;
 
   ngOnChanges(changes: SimpleChanges): void {
-    let change = changes['checkPassword'];
+    const change = changes['checkPassword'];
     if (change) {
       const otherFieldModel = change.currentValue;
       this.validationFunction = fieldMatchesValidator(otherFieldModel);

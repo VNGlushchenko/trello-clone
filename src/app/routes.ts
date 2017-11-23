@@ -6,6 +6,6 @@ import { AppSigninComponent } from './app-signin/app.signin.component';
 export const ROUTES: Routes = [
   { path: '', component: AppMainComponent },
   { path: 'signup', component: AppSignupComponent },
-  { path: 'signin', component: AppSigninComponent }
-  // {path: '**', component: NotFoundComponent}
+  { path: 'signin', component: AppSigninComponent },
+  { path: '**', redirectTo: '/', pathMatch: 'full' }
 ];

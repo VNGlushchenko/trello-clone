@@ -1,6 +1,6 @@
 export class SignupModel {
-  userName: String;
-  email: String;
-  password: String;
-  confirmedPassword: String;
+  userName: string;
+  email: string;
+  password: string;
+  confirmedPassword: string;
 }

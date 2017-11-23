@@ -1,44 +1,44 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class GroupService {
-  private _apiUrl = '/api';
+  private _apiUrl = '/api/group';
 
-  groupDeletionMsg = '';
-  groupUpdatingMsg = '';
-  groupIdForDeletion = '';
-  isGroupEditable = false;
   currentEditableGroupId = '';
+  groupDeletionMsg = '';
+  groupIdForDeletion = '';
+  groupUpdatingMsg = '';
+  isGroupEditable = false;
   newGroupName = '';
 
   constructor(private _http: HttpClient) {}
 
-  public createGroup(
+  createGroup(
     title: string,
     groupBoardId: string,
     orderGroup: number
   ): Observable<Object> {
-    return this._http.post(`${this._apiUrl}/group`, {
+    return this._http.post(`${this._apiUrl}`, {
       title: title,
       boardId: groupBoardId,
       order: orderGroup
     });
   }
 
-  public updateGroup(id: string, newTitle: string): Observable<Object> {
-    return this._http.put(`${this._apiUrl}/group`, {
+  updateGroup(id: string, newTitle: string): Observable<Object> {
+    return this._http.put(`${this._apiUrl}`, {
       _id: id,
       title: newTitle
     });
   }
 
-  public deleteGroup(id: string): Observable<Object> {
-    return this._http.delete(`${this._apiUrl}/group/${id}`);
+  deleteGroup(id: string): Observable<Object> {
+    return this._http.delete(`${this._apiUrl}/${id}`);
   }
 
-  public exitFromGroupEditing() {
+  exitFromGroupEditing(): void {
     this.isGroupEditable = false;
     this.currentEditableGroupId = '';
   }

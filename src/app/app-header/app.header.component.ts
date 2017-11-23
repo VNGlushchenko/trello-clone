@@ -12,15 +12,15 @@ export class AppHeaderComponent implements OnInit {
 
   ngOnInit() {}
 
-  goToSignup() {
+  goToSignup(): void {
     this._router.navigate(['/signup']);
   }
 
-  goToSignIn() {
+  goToSignIn(): void {
     this._router.navigate(['/signin']);
   }
 
-  logOut() {
+  logOut(): void {
     this._authService.logOut();
     this._router.navigate(['/']);
   }

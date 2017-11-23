@@ -1,3 +1,16 @@
+.container-fluid>.row {
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.container-fluid>.row>.col-sm-3,
+.container-fluid>.row>.col-md-3,
+.container-fluid>.row>.col-lg-3 {
+    display: inline-block;
+    float: none;
+    vertical-align: top;
+}
+
 .loader {
     border: 6px solid #f3f3f3;
     border-top: 6px solid #3498db;
@@ -19,26 +32,11 @@
     }
 }
 
-.container-fluid>.row {
-    overflow-x: auto;
-    white-space: nowrap;
-}
-
-.container-fluid>.row>.col-sm-3,
-.container-fluid>.row>.col-md-3,
-.container-fluid>.row>.col-lg-3 {
-    display: inline-block;
-    float: none;
-    vertical-align: top;
-}
-
 .ng-valid[required],
 .ng-valid.required {
     border-left: 5px solid #42A948;
-    /* green */
 }
 
 .ng-invalid:not(form) {
     border-left: 5px solid #a94442;
-    /* red */
 }

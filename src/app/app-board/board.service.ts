@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import { Task } from '../app-task/task';
 import { Board } from './board';
@@ -14,15 +14,15 @@ export class BoardService {
 
   constructor(private _http: HttpClient) {}
 
-  public getAnyOneBoard(): Observable<Object> {
+  getAnyOneBoard(): Observable<Object> {
     return this._http.get(this._apiUrl);
   }
 
-  public getBoardById(id: string): Observable<Object> {
+  getBoardById(id: string): Observable<Object> {
     return this._http.get(`${this._apiUrl}/${id}`);
   }
 
-  public getBoardWithGroupsAndTasks(id: string): Observable<Object> {
+  getBoardWithGroupsAndTasks(id: string): Observable<Object> {
     return Observable.forkJoin(
       this.getBoardById(id),
       this.getGroupsByBoardId(id),
@@ -30,15 +30,15 @@ export class BoardService {
     );
   }
 
-  public getGroupsByBoardId(id: string): Observable<Object> {
+  getGroupsByBoardId(id: string): Observable<Object> {
     return this._http.get(`${this._apiUrl}/${id}/groups`);
   }
 
-  public getTasksByBoardId(id: string): Observable<Object> {
+  getTasksByBoardId(id: string): Observable<Object> {
     return this._http.get(`${this._apiUrl}/${id}/tasks`);
   }
 
-  public distributeTasksOnGroups(source: Task[], destination: Group[]): void {
+  distributeTasksOnGroups(source: Task[], destination: Group[]): void {
     for (let i = 0; i < destination.length; i++) {
       destination[i].tasks = new Array<Task>();
       for (let j = 0; j < source.length; j++) {

@@ -1,9 +1,8 @@
-import { SignupModel } from './signup.model';
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
-
-import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { Router } from '@angular/router';
+import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { AuthService } from '../auth.service';
+import { SignupModel } from './signup.model';
 
 @Component({
   selector: 'app-signup',
@@ -24,20 +23,20 @@ export class AppSignupComponent implements OnInit {
 
   ngOnInit() {}
 
-  showSuccess(msg) {
+  showSuccess(msg: string): void {
     this.toastr.success(msg, 'Success!', { toastLife: 3000 });
   }
 
-  showError(msg) {
-    this.toastr.error(msg, 'Oops!');
+  showError(msg: string): void {
+    this.toastr.error(msg, 'Oops!', { toastLife: 3000 });
   }
 
-  onSubmit(userData) {
+  onSubmit(userData: SignupModel): void {
     this._authService
       .signUp(userData)
       .toPromise()
       .then(
-        res => {
+        (res: Object) => {
           this._authService.userCredentials.user = res['user'];
           this._authService.userCredentials.token = res['token'];
 
@@ -46,7 +45,7 @@ export class AppSignupComponent implements OnInit {
             this._router.navigate(['/']);
           }, 3000);
         },
-        err => {
+        (err: Object) => {
           this.showError(err['error']['message']);
         }
       );

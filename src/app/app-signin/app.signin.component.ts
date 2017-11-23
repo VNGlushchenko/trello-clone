@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { SigninModel } from './signin.model';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signin',
@@ -11,33 +11,28 @@ import { Router } from '@angular/router';
 export class AppSigninComponent implements OnInit {
   user = new SigninModel();
 
-  serverValidationErrMsg: String = '';
+  serverValidationErrMsg = '';
 
   constructor(private _authService: AuthService, private _router: Router) {}
 
   ngOnInit() {}
 
-  onSubmit(userData) {
+  onSubmit(userData: SigninModel): void {
     this._authService
       .signIn(userData)
       .toPromise()
       .then(
-        res => {
+        (res: Object) => {
           this.serverValidationErrMsg = '';
           this._authService.userCredentials.user = res['user'];
           this._authService.userCredentials.token = res['token'];
-          /* console.log(
-            `user = ${this._authService.userCredentials.user}, token = ${this
-              ._authService.userCredentials.token}`
-          ); */
           this._router.navigate(['/']);
         },
-        err => {
-          if (err.status === 401) {
+        (err: Object) => {
+          if (err['status'] === 401) {
             this.serverValidationErrMsg =
               'Invalid login credentials. Please try again.';
           }
-          console.log(err['message']);
         }
       );
   }
