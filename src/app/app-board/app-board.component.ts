@@ -339,6 +339,7 @@ export class AppBoardComponent implements OnInit, OnDestroy {
           this.toggleAuthFormsVisible();
         }
 
+        this._authService.serverValidationErrMsg = '';
         this.openModal(this.modal1);
 
         return;
@@ -350,6 +351,7 @@ export class AppBoardComponent implements OnInit, OnDestroy {
 
   // This toggles auth forms in task details modal window
   toggleAuthFormsVisible(): void {
+    this._authService.serverValidationErrMsg = '';
     this.isModalSignInVisible = !this.isModalSignInVisible;
     this.isModalSignUpVisible = !this.isModalSignUpVisible;
   }

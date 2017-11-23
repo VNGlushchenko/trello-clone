@@ -22,8 +22,8 @@
         <div *ngIf="passwordModel.touched || signInForm.submitted">
           <div *ngIf="passwordModel.hasError('required')" class="alert alert-danger">Password is required</div>
         </div>
-        <div *ngIf="serverValidationErrMsg">
-          <div class="alert alert-danger">{{serverValidationErrMsg}}</div>
+        <div *ngIf="_authService.serverValidationErrMsg">
+          <div class="alert alert-danger">{{_authService.serverValidationErrMsg}}</div>
         </div>
         <button type="submit" class="btn btn-success btn-block" [disabled]="!signInForm.form.valid">Submit</button>
       </form>

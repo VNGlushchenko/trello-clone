@@ -1,5 +1,7 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
+import { Event, Router, NavigationEnd } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { AuthService } from '../auth.service';
 import { SignupModel } from './signup.model';
@@ -9,8 +11,11 @@ import { SignupModel } from './signup.model';
   templateUrl: './app.signup.component.html',
   styleUrls: ['./app.signup.component.css']
 })
-export class AppSignupComponent implements OnInit {
+export class AppSignupComponent implements OnInit, OnDestroy {
   user = new SignupModel();
+
+  private _routerEvents: Observable<Event>;
+  private _routerEventsSubscription: Subscription;
 
   constructor(
     private _authService: AuthService,
@@ -19,16 +24,26 @@ export class AppSignupComponent implements OnInit {
     private _router: Router
   ) {
     this.toastr.setRootViewContainerRef(vcr);
+
+    this._routerEvents = _router.events;
+
+    this._routerEventsSubscription = this._routerEvents.subscribe(
+      (event: Event) => {
+        if (event instanceof NavigationEnd) {
+          this._authService.serverValidationErrMsg = '';
+        }
+      }
+    );
   }
 
   ngOnInit() {}
 
-  showSuccess(msg: string): void {
-    this.toastr.success(msg, 'Success!', { toastLife: 3000 });
+  ngOnDestroy() {
+    this._routerEventsSubscription.unsubscribe();
   }
 
-  showError(msg: string): void {
-    this.toastr.error(msg, 'Oops!', { toastLife: 3000 });
+  showSuccess(msg: string): void {
+    this.toastr.success(msg, 'Success!', { toastLife: 3000 });
   }
 
   onSubmit(userData: SignupModel): void {
@@ -37,6 +52,7 @@ export class AppSignupComponent implements OnInit {
       .toPromise()
       .then(
         (res: Object) => {
+          this._authService.serverValidationErrMsg = '';
           this._authService.userCredentials.user = res['user'];
           this._authService.userCredentials.token = res['token'];
 
@@ -46,7 +62,7 @@ export class AppSignupComponent implements OnInit {
           }, 3000);
         },
         (err: Object) => {
-          this.showError(err['error']['message']);
+          this._authService.serverValidationErrMsg = err['error']['message'];
         }
       );
   }

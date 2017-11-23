@@ -8,6 +8,7 @@ import { UserCredentials } from './app-signin/user.credentials';
 @Injectable()
 export class AuthService {
   userCredentials = new UserCredentials();
+  serverValidationErrMsg = '';
 
   constructor(private _http: HttpClient) {}
 
