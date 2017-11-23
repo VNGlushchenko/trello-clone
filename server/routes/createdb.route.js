@@ -185,6 +185,6 @@ module.exports = function(app) {
       });
     });
 
-    res.send(board1);
+    res.send('Board with groups of tasks was succesfully created');
   });
 };

@@ -1,32 +1,39 @@
 # TrelloClone
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.4.7.
+This is a light trello-clone
 
-## Development server
+This project was generated with
+[Angular CLI](https://github.com/angular/angular-cli) version 1.4.7.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+# Running app
 
-## Code scaffolding
+**To run this app MongoDB must be previously installed and run.**
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+1. Clone this repository.
+2. In first terminal window go to folder of cloned project and run command **npm
+   install**.
+3. In second terminal window go to folder `{folder of cloned project}/server`
+   and run command **node server.js**.
+4. Create MongoDB database with help of opening link
+   `http://localhost:3000/api/createdb` in browser. If database is successfully
+   created you will see message `Board with groups of tasks was successfully
+   created`.
+5. In first terminal window (from item 2 of this list) run command **npm start**
+   and go to `http://localhost:4200/` in browser.
 
-## Build
+## Front-end
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+**Used frameworks:**
 
-## Running unit tests
+* Angular 4;
+* Twitter Bootstrap.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Back-end
 
-## Running end-to-end tests
+**Used framework:**
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+* Express
 
-## Further help
+**Used database:**
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
-
-#Running app
-
-1) Run `node server.js` in first terminal window for path `app_folder/server`
-2) Run `npm start` in second terminal window for path `app_folder` and go to `http://localhost:4200/`
+* MongoDB
